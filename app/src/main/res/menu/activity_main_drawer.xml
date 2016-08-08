@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_home"
+            android:icon="@drawable/ic_dice_24dp"
+            android:title="@string/nav_home" />
+        <item
+            android:id="@+id/nav_favorite"
+            android:icon="@drawable/ic_favorite_24dp"
+            android:title="@string/nav_favorites" />
+        <item
+            android:id="@+id/nav_recent"
+            android:icon="@drawable/ic_recent_24dp"
+            android:title="@string/nav_last_rolls" />
+        <item
+            android:id="@+id/nav_settings"
+            android:icon="@drawable/ic_settings_24dp"
+            android:title="@string/nav_settings" />
+    </group>
+
+    <item android:title="@string/nav_contribute_title">
+        <menu>
+            <item
+                android:id="@+id/nav_share"
+                android:icon="@drawable/ic_share_24dp"
+                android:title="@string/nav_share" />
+            <item
+                android:id="@+id/nav_beer"
+                android:icon="@drawable/ic_rowing_24dp"
+                android:title="@string/nav_pay_us_a_beer" />
+        </menu>
+    </item>
+
+</menu>
