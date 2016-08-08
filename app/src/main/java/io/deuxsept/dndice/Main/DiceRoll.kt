@@ -1,4 +1,4 @@
-package io.deuxsept.dndice
+package io.deuxsept.dndice.Main
 
 import android.util.Log
 

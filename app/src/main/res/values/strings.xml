@@ -16,4 +16,8 @@
     <string name="nav_pay_us_a_beer">Pay us a beer !</string>
     <!-- Navigation Drawer -->
 
+    <!-- Home Fragment -->
+    <string name="home_fragment">Salut tête de nègre</string>
+    <!-- Home Fragment -->
+
 </resources>
