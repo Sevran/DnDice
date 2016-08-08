@@ -71,7 +71,7 @@ public class DiceRoll {
             // Grab what's left of 'd'
             // Otherwise set to 0
             new_dice.dice_rolls = when(stripped.get(0) == 'd') {
-                true -> { 0 }
+                true -> { 1 }
                 false -> { stripped.split("d")[0].toInt() }
             }
 
