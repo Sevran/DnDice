@@ -25,10 +25,29 @@ public class DiceRoll {
      * Build a new DiceRoll with the appropriate values.
      * Defaults to 1 roll and 0 bonus if not specified
      */
-    public constructor(num_faces: Int, num_rolls: Int = 1, bonus: Int = 0) {
+    public constructor(num_rolls: Int, num_faces: Int, bonus: Int = 0) {
         this.dice_type = num_faces
         this.dice_rolls = num_rolls
         this.bonus = bonus
+    }
+
+    /**
+     * Override equality comparison
+     * Two rolls are the same when their bonus, dice type and rollcount match
+     */
+    override fun equals(other: Any?): Boolean {
+        return when(other) {
+            is DiceRoll -> {
+                other.bonus == this.bonus &&
+                    other.dice_type == this.dice_type &&
+                    other.dice_rolls == this.dice_rolls
+            }
+            else -> { false }
+        }
+    }
+
+    override fun toString(): String {
+        return "${dice_rolls}d${dice_type} + ${bonus}"
     }
 
     companion object DiceCreator {
@@ -38,16 +57,18 @@ public class DiceRoll {
          * ex: DiceRoll.from_string("4d20 + 12")
          */
         fun from_string(value: String): DiceRoll {
-            var new_dice = DiceRoll(0)
-
             var stripped = value.replace(" ", "")
             var left : String
+
+            var bonus: Int
+            var rolls: Int
+            var type: Int
 
             // Get the applied bonus.
             // If our string contains '+', we grab what's right of that.
             // Otherwise, set it to 0
             // We also build <left> to be able to parse the dice type more easily later
-            new_dice.bonus = when(stripped.contains("+")) {
+            bonus = when(stripped.contains("+")) {
                 true -> {
                     left = stripped.split("+")[0];
                     stripped.split("+")[1].toInt()
@@ -62,7 +83,7 @@ public class DiceRoll {
             // If our string contains 'd', we grab what's right of that (stripped of the bonus part if it existed)
             // Otherwise, set it to 0 (Kotlin doesn't have union types so we can't set it to an Error type)
             // Maybe check for a functional library with Option/Maybe types ?
-            new_dice.dice_type = when(left.contains("d")) {
+            type = when(left.contains("d")) {
                 true -> { left.split("d")[1].toInt() }
                 false -> { 0 }
             }
@@ -70,12 +91,12 @@ public class DiceRoll {
             // Get the amount of rolls
             // Grab what's left of 'd'
             // Otherwise set to 0
-            new_dice.dice_rolls = when(stripped.get(0) == 'd') {
+            rolls = when(stripped.get(0) == 'd') {
                 true -> { 1 }
                 false -> { stripped.split("d")[0].toInt() }
             }
 
-            return new_dice
+            return DiceRoll(rolls, type, bonus)
         }
     }
 }
