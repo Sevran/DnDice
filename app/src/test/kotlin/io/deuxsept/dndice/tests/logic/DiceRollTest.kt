@@ -3,9 +3,7 @@ package io.deuxsept.dndice.tests.logic
 import io.deuxsept.dndice.Main.Dice
 import io.deuxsept.dndice.Main.DiceRoll
 import org.junit.Assert;
-import org.junit.BeforeClass
 import org.junit.Test;
-import java.util.*
 
 /**
  * Tests for DiceRoll
