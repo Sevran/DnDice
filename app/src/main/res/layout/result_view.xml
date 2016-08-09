@@ -25,8 +25,7 @@
         android:layout_below="@+id/res_title"
         android:layout_centerHorizontal="true"
         android:fontFamily="sans-serif-thin"
-        android:textSize="24sp"
-        android:text="143"/>
+        android:textSize="24sp"/>
 
     <TextView
         android:id="@+id/result_var"
@@ -35,8 +34,7 @@
         android:layout_below="@+id/formula_var"
         android:layout_centerHorizontal="true"
         android:fontFamily="sans-serif-thin"
-        android:textSize="82sp"
-        android:text="143"/>
+        android:textSize="82sp"/>
 
     <TextView
         android:id="@+id/detail_var"
@@ -45,9 +43,7 @@
         android:layout_below="@+id/result_var"
         android:layout_centerHorizontal="true"
         android:fontFamily="sans-serif-thin"
-        android:textSize="24sp"
-        android:text="143"/>
-
+        android:textSize="24sp"/>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/replay_result_fab"
