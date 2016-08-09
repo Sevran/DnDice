@@ -45,31 +45,47 @@ class DiceRoll {
         return Objects.hash(this.bonus_list, this.dice_list)
     }
 
+    /**
+     * Returns this roll as a liste of elements separated by '+'
+     */
     override fun toString(): String {
         return dice_list.joinToString(" + ") + " + " + bonus_list.joinToString(" + ")
+    }
+
+    /**
+     * Returns the formula used for the roll, with dices first then bonuses and appropriate signs.
+     */
+    fun formula(): String {
+        return "${dice_list.joinToString(" + ")} + ${bonus_list.joinToString(" + ")}"
     }
 
     /**
      * Get random results for this dice roll
      * Returns a list of random values as well as the flat bonuses
      */
-    fun roll(): List<Int> {
+    fun roll(): DiceRollResult {
         var rng: Random = Random()
-        var rolls: MutableList<Int> = mutableListOf()
+        var rolls: MutableList<List<Int>> = mutableListOf()
 
         dice_list.forEach {
             item -> run {
+                var rolls_for_item: MutableList<Int> = mutableListOf()
                 for (i in 0..Math.abs(item.dice_rolls) - 1) {
-                    rolls.add(rng.nextInt(item.dice_type) + 1)
+                    rolls_for_item.add((rng.nextInt(item.dice_type) + 1) * Integer.signum(item.dice_rolls))
                 }
+                rolls.add(rolls_for_item)
             }
         }
 
         bonus_list.forEach {
-            item -> rolls.add(item)
+            item -> run {
+                var rolls_for_item: MutableList<Int> = mutableListOf()
+                rolls_for_item.add(item)
+                rolls.add(rolls_for_item)
+            }
         }
 
-        return rolls
+        return DiceRollResult(rolls)
     }
 
     /**
@@ -148,6 +164,9 @@ class DiceRoll {
             // 'd100' is a perfectly valid value, we just reinterpret that as 1d100
             val rolls = when(splitted[0].length) {
                 0 -> { 1 }
+                1 -> { if (splitted[0] == "-") -1
+                       else if (splitted[0] == "+") 1
+                       else splitted[0].toInt() }
                 else -> { splitted[0].toInt() }
             }
             return Dice(rolls , splitted[1].toInt())
