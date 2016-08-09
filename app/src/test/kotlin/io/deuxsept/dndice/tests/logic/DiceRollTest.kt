@@ -51,4 +51,19 @@ class DiceRollTest {
         parsed_dice = DiceRoll.from_string("2d10 + 3 + 5d20 +++-+ 8 - 5 - 2d4 +")
         Assert.assertTrue("Parsed dice does not have the expected value ($hard_dice | $parsed_dice).", hard_dice == parsed_dice)
     }
+
+    @Test
+    fun RollTest() {
+        var not_random_roll = DiceRoll.from_string("2")
+        Assert.assertTrue("Roll should only have one element, got ${not_random_roll.roll().size}", not_random_roll.roll().size == 1)
+        Assert.assertTrue("Roll should have returned 2, got ${not_random_roll.roll().sum()}", not_random_roll.roll().sum() == 2)
+
+        var random_unique_roll = DiceRoll.from_string("1d1")
+        Assert.assertTrue("Roll should only have one element, got ${random_unique_roll.roll().size}", random_unique_roll.roll().size == 1)
+        Assert.assertTrue("Roll should have returned 1, got ${random_unique_roll.roll().sum()}", random_unique_roll.roll().sum() == 1)
+
+        var no_roll = DiceRoll.from_string("0d20")
+        Assert.assertTrue("Roll should only have one element, got ${no_roll.roll().size}", no_roll.roll().size == 0)
+        Assert.assertTrue("Roll should have returned 1, got ${no_roll.roll().sum()}", no_roll.roll().sum() == 0)
+    }
 }

@@ -49,6 +49,32 @@ class DiceRoll {
         return dice_list.joinToString(" + ") + " + " + bonus_list.joinToString(" + ")
     }
 
+    /**
+     * Get random results for this dice roll
+     * Returns a list of random values as well as the flat bonuses
+     */
+    fun roll(): List<Int> {
+        var rng: Random = Random()
+        var rolls: MutableList<Int> = mutableListOf()
+
+        dice_list.forEach {
+            item -> run {
+                for (i in 0..Math.abs(item.dice_rolls) - 1) {
+                    rolls.add(rng.nextInt(item.dice_type) + 1)
+                }
+            }
+        }
+
+        bonus_list.forEach {
+            item -> rolls.add(item)
+        }
+
+        return rolls
+    }
+
+    /**
+     * Utilities to create a new dice roll
+     */
     companion object DiceCreator {
         /**
          * Create a new DiceRoll from a String value
