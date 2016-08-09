@@ -14,7 +14,7 @@ class DiceRollTest {
     // Default test dice, 2d10 + 3
     private val default_dice : DiceRoll = DiceRoll(listOf(Dice(2,10)), listOf(3))
 
-    //@Test
+    @Test
     fun EqualityTest() {
         val copy_dice = DiceRoll.from_string("2d10 + 3")
         Assert.assertTrue("equals returned false while both are the same ($default_dice | $copy_dice)", default_dice == copy_dice);
