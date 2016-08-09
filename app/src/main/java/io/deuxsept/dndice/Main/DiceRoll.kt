@@ -159,7 +159,7 @@ class DiceRoll {
         private fun interpret_bonus(value: String): Int? {
             return when(value.length) {
                 0 -> null
-                1 -> if (value[0] == '+' || value[0] == '-') null else value[0].toInt()
+                1 -> if (value[0] == '+' || value[0] == '-') null else value.toInt()
                 else -> value.toInt()
             }
         }
