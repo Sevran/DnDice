@@ -1,7 +1,5 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:layout_width="match_parent" android:layout_height="match_parent">
 
     <LinearLayout
         android:id="@+id/dice_row_1"
@@ -64,50 +62,29 @@
 
     </LinearLayout>
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="4dp"
+        android:background="@drawable/shadow_bottom_to_top"
+        android:layout_above="@+id/display" />
+
+    <TextView
+        android:id="@+id/display"
+        android:layout_width="match_parent" android:layout_height="56dp"
+        style="?borderlessButtonStyle"
+        android:background="@android:color/transparent"
+        android:layout_above="@+id/roll_button"
+        android:text="1+1 = 2 Kappa" />
+
     <TextView
         android:id="@+id/roll_button"
-        android:layout_width="match_parent" android:layout_height="56dp"
-        android:layout_centerHorizontal="true" android:layout_alignParentBottom="true"
+        android:layout_width="match_parent" android:layout_height="64dp"
+        android:layout_alignParentBottom="true"
         style="?borderlessButtonStyle"
         android:background="@color/colorAccent"
         android:textColor="@color/md_white_1000"
         android:text="@string/roll_button" />
 
-    <RelativeLayout
-        android:id="@+id/result_view"
-        android:layout_width="match_parent" android:layout_height="match_parent"
-        android:background="@color/colorPrimary"
-        android:visibility="gone">
-
-        <TextView
-            android:layout_width="wrap_content" android:layout_height="wrap_content"
-            android:textColor="@color/md_white_1000"
-            android:layout_centerInParent="true"
-            android:fontFamily="sans-serif-thin"
-            android:textSize="24sp"
-            android:text="@string/result_title"
-            android:layout_above="@+id/result_var"/>
-
-        <TextView
-            android:id="@+id/result_var"
-            android:layout_width="wrap_content" android:layout_height="wrap_content"
-            android:textColor="@color/md_white_1000"
-            android:layout_centerInParent="true"
-            android:fontFamily="sans-serif-thin"
-            android:textSize="82sp"
-            android:text="143"/>
-        
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/close_result_fab"
-            android:layout_width="wrap_content" android:layout_height="wrap_content"
-            android:padding="16dp"
-            android:src="@drawable/ic_clear_24dp"
-            app:elevation="6dp"
-            app:fabSize="normal"
-            android:layout_centerHorizontal="true"
-            android:layout_alignParentBottom="true"
-            android:layout_marginBottom="56dp"/>
-
-    </RelativeLayout>
+    <include layout="@layout/result_view" />
 
 </RelativeLayout>
