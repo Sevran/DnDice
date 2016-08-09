@@ -1,6 +1,7 @@
 package io.deuxsept.dndice.Main
 
-import android.util.Log
+import java.text.DecimalFormat
+import java.util.*
 
 /**
  * Represents a single roll, with dice type, amount of rolls and added bonus
@@ -8,27 +9,24 @@ import android.util.Log
  * Do. Not. Modify. The. Fields. Of. An. Existing. Instance.
  */
 public class DiceRoll {
-    /**
-     * Type of dice (e.g. d20, d10, d4, d<n> where <n> is <dice_type>)
-     */
-    public var dice_type: Int
-    /**
-     * Amount of rolls to do (e.g. 2d10, 4d4, <n>d6 where <n> is <dice_rolls>)
-     */
-    public var dice_rolls: Int
-    /**
-     * Bonus to add after the roll (e.g. 2d10 + 3, 4d4 + <n> where <n> is <bonus>)
-     */
-    public var bonus: Int
+    public var bonus: Int = 0
+
+    public var bonus_list: MutableList<Int> = mutableListOf()
+    public var dice_list: MutableList<Dice> = mutableListOf()
 
     /**
-     * Build a new DiceRoll with the appropriate values.
-     * Defaults to 1 roll and 0 bonus if not specified
+     * If you're using this constructor for anything else than tests, you're stupid. Use from_string
      */
-    public constructor(num_rolls: Int, num_faces: Int, bonus: Int = 0) {
-        this.dice_type = num_faces
-        this.dice_rolls = num_rolls
-        this.bonus = bonus
+    public constructor(dices: List<Dice>, bonuses: List<Int>) {
+        dice_list = dices.toMutableList()
+        bonus_list = bonuses.toMutableList()
+    }
+
+    /**
+     * You better have a good reason to use this constructor, I swear. Use from_string
+     */
+    public constructor() {
+
     }
 
     /**
@@ -38,16 +36,15 @@ public class DiceRoll {
     override fun equals(other: Any?): Boolean {
         return when(other) {
             is DiceRoll -> {
-                other.bonus == this.bonus &&
-                    other.dice_type == this.dice_type &&
-                    other.dice_rolls == this.dice_rolls
+                (other.bonus_list.size == this.bonus_list.size && other.bonus_list.filter { !this.bonus_list.contains(it) }.isEmpty()) &&
+                        (other.dice_list.size == this.dice_list.size && other.dice_list.filter { !this.dice_list.contains(it) }.isEmpty())
             }
             else -> { false }
         }
     }
 
     override fun toString(): String {
-        return "${dice_rolls}d${dice_type} + ${bonus}"
+        return dice_list.joinToString(" + ") + " + " + bonus_list.joinToString(" + ")
     }
 
     companion object DiceCreator {
@@ -57,46 +54,85 @@ public class DiceRoll {
          * ex: DiceRoll.from_string("4d20 + 12")
          */
         fun from_string(value: String): DiceRoll {
+            var dice: DiceRoll = DiceRoll()
             var stripped = value.replace(" ", "")
-            var left : String
+            var accumulator = StringBuilder()
 
-            var bonus: Int
-            var rolls: Int
-            var type: Int
 
-            // Get the applied bonus.
-            // If our string contains '+', we grab what's right of that.
-            // Otherwise, set it to 0
-            // We also build <left> to be able to parse the dice type more easily later
-            bonus = when(stripped.contains("+")) {
-                true -> {
-                    left = stripped.split("+")[0];
-                    stripped.split("+")[1].toInt()
+            var is_dice: Boolean = false
+            var is_bonus: Boolean = true
+            var trigger_parse: Boolean = false
+            var allowed_symbols = arrayOf('+', '-')
+
+            // Parsey fun time
+            // character by character, we add them into an accumulator, activating or disactivating
+            // flags with the characters we find
+            // finding a 'd' will trigger the is_dice flag
+            // finding a '+' or '-' will trigger the trigger_parse flag, which tells us to interpret
+            // what we got and clear everything back to default values
+            for (i in 0..stripped.length - 1) {
+                accumulator.append(stripped[i])
+
+                // We can't lookahead for the very last character, so we just automatically
+                // trigger the trigger_parse flag when we reach it
+                if (i+1 < stripped.length) {
+                    when(stripped[i+1]) {
+                        'd' -> {
+                            is_dice = true
+                            is_bonus = false
+                        }
+                        in allowed_symbols -> {
+                            trigger_parse = true
+                        }
+                    }
                 }
-                false -> {
-                    left = stripped;
-                    0
+                else { trigger_parse = true }
+
+                // Fill out the appropriate list for the dice, and reset everything
+                if (trigger_parse) {
+                    if (is_dice) {
+                        dice.dice_list.add(interpret_dice(accumulator.toString()))
+                    }
+                    if (is_bonus) {
+                        var parsed = interpret_bonus(accumulator.toString())
+                        when(parsed) {
+                            null -> {}
+                            else -> { dice.bonus_list.add(parsed) }
+                        }
+                    }
+                    accumulator.setLength(0) // clear the accumulator
+                    is_dice = false
+                    is_bonus = true
+                    trigger_parse = false
                 }
             }
 
-            // Get the dice type.
-            // If our string contains 'd', we grab what's right of that (stripped of the bonus part if it existed)
-            // Otherwise, set it to 0 (Kotlin doesn't have union types so we can't set it to an Error type)
-            // Maybe check for a functional library with Option/Maybe types ?
-            type = when(left.contains("d")) {
-                true -> { left.split("d")[1].toInt() }
-                false -> { 0 }
-            }
+            return dice
+        }
 
-            // Get the amount of rolls
-            // Grab what's left of 'd'
-            // Otherwise set to 0
-            rolls = when(stripped.get(0) == 'd') {
-                true -> { 1 }
-                false -> { stripped.split("d")[0].toInt() }
+        /**
+         * Interpret <value> as a dice
+         * ex: "2d10" will return a Dice(2, 10)
+         */
+        private fun interpret_dice(value: String): Dice {
+            var splitted = value.split('d')
+            // 'd100' is a perfectly valid value, we just reinterpret that as 1d100
+            var rolls = when(splitted[0].length) {
+                0 -> { 1 }
+                else -> { splitted[0].toInt() }
             }
+            return Dice(rolls , splitted[1].toInt())
+        }
 
-            return DiceRoll(rolls, type, bonus)
+        /**
+         * Interpret <value> as a bonus
+         */
+        private fun interpret_bonus(value: String): Int? {
+            return when(value.length) {
+                0 -> null
+                1 -> if (value[0] == '+' || value[0] == '-') null else value[0].toInt()
+                else -> value.toInt()
+            }
         }
     }
 }
