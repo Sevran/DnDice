@@ -105,7 +105,8 @@ class HomeFragment : Fragment() {
         mFavoriteFab.hide()
         mCloseResFab.hide()
         mReplayFab.hide()
-        Utils.circularUnreveal(mResultView, width/2, height)
+        val fabPos = mResultView.height - Utils.convertDpToPixel(90, context)
+        Utils.circularUnreveal(mResultView, mResultView.width/2, fabPos.toInt())
     }
 
     fun reRoll() {

@@ -5,7 +5,8 @@
         android:id="@+id/display"
         android:layout_width="match_parent" android:layout_height="72dp"
         style="?borderlessButtonStyle"
-        android:background="@android:color/transparent"
+        android:background="@color/md_white_1000"
+        android:foreground="?selectableItemBackground"
         android:text="1+1 = 2 Kappa" />
 
     <View
@@ -99,24 +100,11 @@
 
     </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent" android:layout_height="wrap_content"
-        android:layout_below="@+id/dice_row_2" android:layout_above="@+id/keypad"
-        android:gravity="center_vertical">
-
-        <View
-            android:id="@+id/oui"
-            android:layout_width="match_parent" android:layout_height="1dp"
-            android:background="@color/colorPrimaryDark"
-            android:layout_marginStart="56dp" android:layout_marginEnd="56dp"/>
-
-    </LinearLayout>
-
     <RelativeLayout
         android:id="@+id/keypad"
         android:layout_width="match_parent" android:layout_height="wrap_content"
-        android:paddingBottom="24dp"
-        android:layout_above="@+id/roll_button">
+        android:paddingTop="24dp"
+        android:layout_below="@+id/dice_row_2">
 
         <Button
             android:id="@+id/button_1"

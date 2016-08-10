@@ -2,6 +2,8 @@ package io.deuxsept.dndice.Utils
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
+import android.content.Context
+import android.util.DisplayMetrics
 import android.util.Log
 import android.view.View
 import android.view.ViewAnimationUtils
@@ -52,5 +54,13 @@ class Utils() {
                 view.visibility = View.GONE
             }
         }
+
+        fun convertDpToPixel(dp: Int, context: Context): Int {
+            val resources = context.resources
+            val metrics = resources.displayMetrics
+            val px = dp * (metrics.densityDpi / DisplayMetrics.DENSITY_DEFAULT)
+            return px
+        }
+
     }
 }
