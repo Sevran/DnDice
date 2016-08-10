@@ -1,40 +1,70 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent" android:layout_height="match_parent">
 
+    <TextView
+        android:id="@+id/display"
+        android:layout_width="match_parent" android:layout_height="72dp"
+        style="?borderlessButtonStyle"
+        android:background="@android:color/transparent"
+        android:text="1+1 = 2 Kappa" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="4dp"
+        android:background="@drawable/shadow_top_to_bottom"
+        android:layout_below="@+id/display" />
+
     <LinearLayout
         android:id="@+id/dice_row_1"
         android:layout_width="match_parent" android:layout_height="wrap_content"
         android:orientation="horizontal"
+        android:layout_below="@+id/display"
         android:gravity="center_horizontal">
 
         <Button
             android:id="@+id/d2"
-            android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:layout_width="0dp" android:layout_height="64dp"
+            android:layout_weight="1"
+            android:background="?selectableItemBackgroundBorderless"
+            android:textColor="@color/md_green_500"
             android:text="d2" />
 
         <Button
             android:id="@+id/d3"
-            android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:layout_width="0dp" android:layout_height="64dp"
+            android:layout_weight="1"
+            android:background="?selectableItemBackgroundBorderless"
+            android:textColor="@color/md_teal_500"
             android:text="d3" />
 
         <Button
             android:id="@+id/d4"
-            android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:layout_width="0dp" android:layout_height="64dp"
+            android:layout_weight="1"
+            android:background="?selectableItemBackgroundBorderless"
+            android:textColor="@color/md_purple_500"
             android:text="d4" />
 
         <Button
             android:id="@+id/d6"
-            android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:layout_width="0dp" android:layout_height="64dp"
+            android:layout_weight="1"
+            android:background="?selectableItemBackgroundBorderless"
+            android:textColor="@color/md_pink_500"
             android:text="d6" />
 
         <Button
             android:id="@+id/d8"
-            android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:layout_width="0dp" android:layout_height="64dp"
+            android:layout_weight="1"
+            android:background="?selectableItemBackgroundBorderless"
+            android:textColor="@color/md_red_500"
             android:text="d8" />
 
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/dice_row_2"
         android:layout_width="match_parent" android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:layout_below="@+id/dice_row_1"
@@ -42,43 +72,169 @@
 
         <Button
             android:id="@+id/d10"
-            android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:layout_width="wrap_content" android:layout_height="64dp"
+            android:background="?selectableItemBackgroundBorderless"
+            android:textColor="@color/md_orange_500"
             android:text="d10" />
 
         <Button
             android:id="@+id/d12"
-            android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:layout_width="wrap_content" android:layout_height="64dp"
+            android:background="?selectableItemBackgroundBorderless"
+            android:textColor="@color/md_brown_500"
             android:text="d12" />
 
         <Button
             android:id="@+id/d20"
-            android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:layout_width="wrap_content" android:layout_height="64dp"
+            android:background="?selectableItemBackgroundBorderless"
+            android:textColor="@color/md_blue_grey_700"
             android:text="d20" />
 
         <Button
             android:id="@+id/d100"
-            android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:layout_width="wrap_content" android:layout_height="64dp"
+            android:background="?selectableItemBackgroundBorderless"
             android:text="d100" />
 
     </LinearLayout>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="4dp"
-        android:background="@drawable/shadow_bottom_to_top"
-        android:layout_above="@+id/display" />
+    <LinearLayout
+        android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:layout_below="@+id/dice_row_2" android:layout_above="@+id/keypad"
+        android:gravity="center_vertical">
 
-    <TextView
-        android:id="@+id/display"
-        android:layout_width="match_parent" android:layout_height="56dp"
-        style="?borderlessButtonStyle"
-        android:background="@android:color/transparent"
-        android:layout_above="@+id/roll_button"
-        android:text="1+1 = 2 Kappa" />
+        <View
+            android:id="@+id/oui"
+            android:layout_width="match_parent" android:layout_height="1dp"
+            android:background="@color/colorPrimaryDark"
+            android:layout_marginStart="56dp" android:layout_marginEnd="56dp"/>
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/keypad"
+        android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:paddingBottom="24dp"
+        android:layout_above="@+id/roll_button">
+
+        <Button
+            android:id="@+id/button_1"
+            android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:layout_toStartOf="@+id/button_2"
+            android:background="?selectableItemBackgroundBorderless"
+            android:textSize="18sp"
+            android:text="1" />
+
+        <Button
+            android:id="@+id/button_2"
+            android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:background="?selectableItemBackgroundBorderless"
+            android:layout_marginEnd="16dp" android:layout_marginStart="16dp"
+            android:textSize="18sp"
+            android:text="2" />
+
+        <Button
+            android:id="@+id/button_3"
+            android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:layout_toEndOf="@+id/button_2"
+            android:background="?selectableItemBackgroundBorderless"
+            android:textSize="18sp"
+            android:text="3" />
+
+        <Button
+            android:id="@+id/button_4"
+            android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:layout_toStartOf="@+id/button_5" android:layout_below="@+id/button_1"
+            android:background="?selectableItemBackgroundBorderless"
+            android:layout_marginTop="8dp"
+            android:textSize="18sp"
+            android:text="4" />
+
+        <Button
+            android:id="@+id/button_5"
+            android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:background="?selectableItemBackgroundBorderless"
+            android:layout_marginEnd="16dp" android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:textSize="18sp"
+            android:layout_below="@+id/button_3"
+            android:text="5" />
+
+        <Button
+            android:id="@+id/button_6"
+            android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:layout_toEndOf="@+id/button_5" android:layout_below="@+id/button_3"
+            android:background="?selectableItemBackgroundBorderless"
+            android:layout_marginTop="8dp"
+            android:textSize="18sp"
+            android:text="6" />
+
+        <Button
+            android:id="@+id/button_7"
+            android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:layout_toStartOf="@+id/button_8" android:layout_below="@+id/button_4"
+            android:background="?selectableItemBackgroundBorderless"
+            android:layout_marginTop="8dp"
+            android:textSize="18sp"
+            android:text="7" />
+
+        <Button
+            android:id="@+id/button_8"
+            android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:background="?selectableItemBackgroundBorderless"
+            android:layout_marginEnd="16dp" android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:textSize="18sp"
+            android:layout_below="@+id/button_5"
+            android:text="8" />
+
+        <Button
+            android:id="@+id/button_9"
+            android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:layout_toEndOf="@+id/button_8" android:layout_below="@+id/button_6"
+            android:background="?selectableItemBackgroundBorderless"
+            android:layout_marginTop="8dp"
+            android:textSize="18sp"
+            android:text="9" />
+
+        <Button
+            android:id="@+id/button_plus"
+            android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:layout_toStartOf="@+id/button_0" android:layout_below="@+id/button_7"
+            android:background="?selectableItemBackgroundBorderless"
+            android:layout_marginTop="8dp"
+            android:textSize="18sp"
+            android:text="+" />
+
+        <Button
+            android:id="@+id/button_0"
+            android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:background="?selectableItemBackgroundBorderless"
+            android:layout_marginEnd="16dp" android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:textSize="18sp"
+            android:layout_below="@+id/button_8"
+            android:text="0" />
+
+        <Button
+            android:id="@+id/button_moins"
+            android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:layout_toEndOf="@+id/button_0" android:layout_below="@+id/button_9"
+            android:background="?selectableItemBackgroundBorderless"
+            android:layout_marginTop="8dp"
+            android:textSize="18sp"
+            android:text="-" />
+
+    </RelativeLayout>
 
     <TextView
         android:id="@+id/roll_button"
-        android:layout_width="match_parent" android:layout_height="64dp"
+        android:layout_width="match_parent" android:layout_height="72dp"
         android:layout_alignParentBottom="true"
         style="?borderlessButtonStyle"
         android:background="@color/colorAccent"

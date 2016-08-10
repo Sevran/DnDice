@@ -1,13 +1,18 @@
 package io.deuxsept.dndice.Main
 
+import android.content.Context
+import android.graphics.Point
 import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
 import android.support.v4.app.Fragment
+import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.widget.TextView
 import io.deuxsept.dndice.R
+import io.deuxsept.dndice.Utils.Utils
 
 class HomeFragment : Fragment() {
 
@@ -28,8 +33,16 @@ class HomeFragment : Fragment() {
     lateinit var mCloseResFab: FloatingActionButton
     lateinit var mReplayFab: FloatingActionButton
 
+    var width: Int = 0
+    var height: Int = 0
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val metrics = DisplayMetrics()
+        val wm = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
+        wm.defaultDisplay.getMetrics(metrics)
+        width = metrics.widthPixels
+        height = metrics.heightPixels
     }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -58,7 +71,10 @@ class HomeFragment : Fragment() {
     }
 
     fun openResultView() {
-        mResultView.visibility = View.VISIBLE
+        Utils.circularReveal(mResultView, width/2, height)
+        mFavoriteFab.show()
+        mCloseResFab.show()
+        mReplayFab.show()
     }
 
     fun initResultViewVars(view: View) {
@@ -86,7 +102,10 @@ class HomeFragment : Fragment() {
     }
 
     fun closeResultView() {
-        mResultView.visibility = View.GONE
+        mFavoriteFab.hide()
+        mCloseResFab.hide()
+        mReplayFab.hide()
+        Utils.circularUnreveal(mResultView, width/2, height)
     }
 
     fun reRoll() {

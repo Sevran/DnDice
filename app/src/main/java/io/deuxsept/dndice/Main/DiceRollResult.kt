@@ -1,7 +1,8 @@
 package io.deuxsept.dndice.Main
 
 /**
- * Created by Flo on 10/08/2016.
+ * Created by Flo
+ * 10/08/2016.
  */
 class DiceRollResult {
     val results: List<List<Int>>
