@@ -49,14 +49,32 @@ class DiceRoll {
      * Returns this roll as a liste of elements separated by '+'
      */
     override fun toString(): String {
-        return dice_list.joinToString(" + ") + " + " + bonus_list.joinToString(" + ")
+        return "${dice_list.joinToString(" + ")} + ${bonus_list.joinToString(" + ")}"
     }
 
     /**
      * Returns the formula used for the roll, with dices first then bonuses and appropriate signs.
      */
     fun formula(): String {
-        return "${dice_list.joinToString(" + ")} + ${bonus_list.joinToString(" + ")}"
+        var result = ""
+        for (i in 0..dice_list.size - 1) {
+            result += when(i) {
+                dice_list.size - 1 -> dice_list[i].toString()
+                else -> if (dice_list[i+1].dice_rolls > 0) "${dice_list[i]}+" else "${dice_list[i]}"
+            }
+        }
+        if (bonus_list.size > 0) {
+            result += if (bonus_list[0] > 0) "+" else ""
+            for (i in 0..bonus_list.size - 1) {
+                result += when(i) {
+                    bonus_list.size - 1 -> bonus_list[i].toString()
+                    else -> if (bonus_list[i+1] > 0) "${bonus_list[i]}+" else "${bonus_list[i]}"
+                }
+            }
+        }
+
+
+        return result
     }
 
     /**

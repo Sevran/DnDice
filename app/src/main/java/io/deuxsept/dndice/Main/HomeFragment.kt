@@ -54,6 +54,7 @@ class HomeFragment : Fragment() {
         mDisplay = view.findViewById(R.id.display) as TextView
         mRollButton = view.findViewById(R.id.roll_button)
         mRollButton.setOnClickListener {
+            executeRoll()
             openResultView()
         }
 
@@ -74,16 +75,18 @@ class HomeFragment : Fragment() {
     }
 
     fun openResultView() {
-        var dice: DiceRoll = DiceRoll.from_string(data_stack.joinToString(""))
-        var result = dice.roll()
-        mFormula.setText(dice.formula())
-        mDetail.setText(result.as_readable_string())
-        mResult.setText(result.as_total().toString()
-        )
         Utils.circularReveal(mResultView, width/2, height)
         mFavoriteFab.show()
         mCloseResFab.show()
         mReplayFab.show()
+    }
+
+    fun executeRoll() {
+        var dice: DiceRoll = DiceRoll.from_string(data_stack.joinToString(""))
+        var result = dice.roll()
+        mFormula.setText(dice.formula())
+        mDetail.setText(result.as_readable_string())
+        mResult.setText(result.as_total().toString())
     }
 
     fun initResultViewVars(view: View) {
