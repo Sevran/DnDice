@@ -10,6 +10,7 @@ import android.support.v4.view.GravityCompat
 import android.support.v4.widget.DrawerLayout
 import android.support.v7.app.ActionBarDrawerToggle
 import android.view.MenuItem
+import android.view.View
 import io.deuxsept.dndice.R
 
 /**
@@ -18,6 +19,8 @@ import io.deuxsept.dndice.R
  */
 class MainActivity : AppCompatActivity(),
         NavigationView.OnNavigationItemSelectedListener {
+
+    lateinit var mHomeFragment: HomeFragment
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,7 +39,8 @@ class MainActivity : AppCompatActivity(),
         navigationView.setNavigationItemSelectedListener(this)
 
         val ft = supportFragmentManager.beginTransaction()
-        ft.add(R.id.fragment_container, HomeFragment.newInstance())
+        mHomeFragment = HomeFragment.newInstance()
+        ft.add(R.id.fragment_container, mHomeFragment)
         ft.commitAllowingStateLoss()
     }
 
@@ -82,5 +86,9 @@ class MainActivity : AppCompatActivity(),
         val ft = supportFragmentManager.beginTransaction()
         ft.replace(R.id.fragment_container, fragment)
         ft.commitAllowingStateLoss()
+    }
+
+    fun push_element_to_stack(view: View) {
+        mHomeFragment.push_element_to_stack(view)
     }
 }

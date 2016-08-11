@@ -13,6 +13,7 @@ import android.view.WindowManager
 import android.widget.TextView
 import io.deuxsept.dndice.R
 import io.deuxsept.dndice.Utils.Utils
+import java.util.*
 
 class HomeFragment : Fragment() {
 
@@ -35,6 +36,8 @@ class HomeFragment : Fragment() {
 
     var width: Int = 0
     var height: Int = 0
+
+    var data_stack: Stack<String> = Stack()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -71,6 +74,12 @@ class HomeFragment : Fragment() {
     }
 
     fun openResultView() {
+        var dice: DiceRoll = DiceRoll.from_string(data_stack.joinToString(""))
+        var result = dice.roll()
+        mFormula.setText(dice.formula())
+        mDetail.setText(result.as_readable_string())
+        mResult.setText(result.as_total().toString()
+        )
         Utils.circularReveal(mResultView, width/2, height)
         mFavoriteFab.show()
         mCloseResFab.show()
@@ -111,5 +120,37 @@ class HomeFragment : Fragment() {
 
     fun reRoll() {
 
+    }
+
+    public fun push_element_to_stack(view: View) {
+        data_stack.push(when(view.id) {
+            R.id.button_0 -> "0"
+            R.id.button_1 -> "1"
+            R.id.button_2 -> "2"
+            R.id.button_3 -> "3"
+            R.id.button_4 -> "4"
+            R.id.button_5 -> "5"
+            R.id.button_6 -> "6"
+            R.id.button_7 -> "7"
+            R.id.button_8 -> "8"
+            R.id.button_9 -> "9"
+            R.id.button_plus -> "+"
+            R.id.button_moins -> "-"
+            R.id.d2 -> "d2"
+            R.id.d3 -> "d3"
+            R.id.d4 -> "d4"
+            R.id.d6 -> "d6"
+            R.id.d10 -> "d10"
+            R.id.d12 -> "d12"
+            R.id.d20 -> "d20"
+            R.id.d100 -> "d100"
+            else -> ""
+        })
+
+        refresh_formula()
+    }
+
+    fun refresh_formula() {
+        mDisplay.text = data_stack.joinToString("")
     }
 }
