@@ -1,7 +1,6 @@
 package io.deuxsept.dndice.Main
 
 import android.content.Context
-import android.graphics.Point
 import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
 import android.support.v4.app.Fragment
@@ -20,8 +19,8 @@ class HomeFragment : Fragment() {
     /**
      * Home Views
      */
-    lateinit var mRollButton: View
     lateinit var mDisplay: TextView
+    lateinit var mRollButton: View
 
     /**
      * Result Views
@@ -52,6 +51,19 @@ class HomeFragment : Fragment() {
         val view: View = inflater!!.inflate(R.layout.fragment_home, container, false)
 
         mDisplay = view.findViewById(R.id.display) as TextView
+        mDisplay.setOnClickListener {
+            if (data_stack.size > 0) {
+                data_stack.pop()
+                refresh_formula()
+            }
+        }
+        mDisplay.setOnLongClickListener {
+            data_stack.clear()
+            refresh_formula()
+            true
+        }
+
+        mRollButton = view.findViewById(R.id.display)
         mRollButton = view.findViewById(R.id.roll_button)
         mRollButton.setOnClickListener {
             executeRoll()
@@ -74,19 +86,19 @@ class HomeFragment : Fragment() {
         }
     }
 
+    fun executeRoll() {
+        val dice: DiceRoll = DiceRoll.from_string(data_stack.joinToString(""))
+        val result = dice.roll()
+        mFormula.text = dice.formula()
+        mDetail.text = result.as_readable_string()
+        mResult.text = result.as_total().toString()
+    }
+
     fun openResultView() {
         Utils.circularReveal(mResultView, width/2, height)
         mFavoriteFab.show()
         mCloseResFab.show()
         mReplayFab.show()
-    }
-
-    fun executeRoll() {
-        var dice: DiceRoll = DiceRoll.from_string(data_stack.joinToString(""))
-        var result = dice.roll()
-        mFormula.setText(dice.formula())
-        mDetail.setText(result.as_readable_string())
-        mResult.setText(result.as_total().toString())
     }
 
     fun initResultViewVars(view: View) {
@@ -105,7 +117,7 @@ class HomeFragment : Fragment() {
         }
         mReplayFab = view.findViewById(R.id.fav_result_fab) as FloatingActionButton
         mReplayFab.setOnClickListener {
-            reRoll()
+            executeRoll()
         }
     }
 
@@ -119,13 +131,11 @@ class HomeFragment : Fragment() {
         mReplayFab.hide()
         val fabPos = mResultView.height - Utils.convertDpToPixel(90, context)
         Utils.circularUnreveal(mResultView, mResultView.width/2, fabPos.toInt())
+        data_stack.clear()
+        refresh_formula()
     }
 
-    fun reRoll() {
-
-    }
-
-    public fun push_element_to_stack(view: View) {
+    fun push_element_to_stack(view: View) {
         // Check if we're not trying to add too long of a number, without preventing from adding a +/-
         if (view.id != R.id.button_moins && view.id != R.id.button_plus)
             if (data_stack.size - data_stack.lastIndexOf("+") > 4 && data_stack.size - data_stack.lastIndexOf("-") > 4)
@@ -148,6 +158,7 @@ class HomeFragment : Fragment() {
             R.id.d3 -> "d3"
             R.id.d4 -> "d4"
             R.id.d6 -> "d6"
+            R.id.d8 -> "d8"
             R.id.d10 -> "d10"
             R.id.d12 -> "d12"
             R.id.d20 -> "d20"
