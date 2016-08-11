@@ -64,7 +64,7 @@ class DiceRoll {
             }
         }
         if (bonus_list.size > 0) {
-            result += if (bonus_list[0] > 0) "+" else ""
+            result += if (bonus_list[0] > 0 && dice_list.size > 0) "+" else ""
             for (i in 0..bonus_list.size - 1) {
                 result += when(i) {
                     bonus_list.size - 1 -> bonus_list[i].toString()
