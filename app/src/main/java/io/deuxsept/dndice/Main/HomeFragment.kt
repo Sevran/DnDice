@@ -123,6 +123,11 @@ class HomeFragment : Fragment() {
     }
 
     public fun push_element_to_stack(view: View) {
+        // Check if we're not trying to add too long of a number, without preventing from adding a +/-
+        if (view.id != R.id.button_moins && view.id != R.id.button_plus)
+            if (data_stack.size - data_stack.lastIndexOf("+") > 4 && data_stack.size - data_stack.lastIndexOf("-") > 4)
+                return
+
         data_stack.push(when(view.id) {
             R.id.button_0 -> "0"
             R.id.button_1 -> "1"
