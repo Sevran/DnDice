@@ -18,13 +18,13 @@ class Utils() {
     companion object {
         val DEBUG: Boolean = true
 
-        fun Log_i(tag: String, string: String) {
-            if (DEBUG) Log.e(tag, string)
+        fun log_i(tag: String, string: String) {
+            if (DEBUG) Log.i(tag, string)
         }
-        fun Log_d(tag: String, string: String) {
-            if (DEBUG) Log.e(tag, string)
+        fun log_d(tag: String, string: String) {
+            if (DEBUG) Log.d(tag, string)
         }
-        fun Log_e(tag: String, string: String) {
+        fun log_e(tag: String, string: String) {
             if (DEBUG) Log.e(tag, string)
         }
 

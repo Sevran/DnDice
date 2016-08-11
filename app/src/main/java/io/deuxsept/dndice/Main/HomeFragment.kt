@@ -10,6 +10,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.TextView
+import io.deuxsept.dndice.Database.DatabaseHelper
+import io.deuxsept.dndice.Model.RollModel
 import io.deuxsept.dndice.R
 import io.deuxsept.dndice.Utils.Utils
 import java.util.*
@@ -32,6 +34,7 @@ class HomeFragment : Fragment() {
     lateinit var mFavoriteFab: FloatingActionButton
     lateinit var mCloseResFab: FloatingActionButton
     lateinit var mReplayFab: FloatingActionButton
+    lateinit var mDb: DatabaseHelper
 
     var width: Int = 0
     var height: Int = 0
@@ -40,6 +43,7 @@ class HomeFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        mDb = DatabaseHelper.getInstance(context)!!
         val metrics = DisplayMetrics()
         val wm = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
         wm.defaultDisplay.getMetrics(metrics)
@@ -92,8 +96,11 @@ class HomeFragment : Fragment() {
         mFormula.text = dice.formula()
         mDetail.text = result.as_readable_string()
         mResult.text = result.as_total().toString()
+
+        mDb.addRecentRoll(RollModel(mFormula.text.toString(), mResult.text.toString(), mDetail.text.toString()))
     }
 
+    //todo Add to back stack so when the user press back, the result screen hide
     fun openResultView() {
         Utils.circularReveal(mResultView, width/2, height)
         mFavoriteFab.show()
