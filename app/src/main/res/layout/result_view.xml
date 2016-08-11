@@ -44,7 +44,11 @@
         android:layout_below="@+id/result_var"
         android:layout_centerHorizontal="true"
         android:fontFamily="sans-serif-thin"
-        android:textSize="24sp"/>
+        android:textSize="24sp"
+        android:ellipsize="end"
+        android:maxLines="4"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"/>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/replay_result_fab"

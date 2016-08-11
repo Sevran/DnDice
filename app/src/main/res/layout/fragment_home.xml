@@ -6,8 +6,7 @@
         android:layout_width="match_parent" android:layout_height="72dp"
         style="?borderlessButtonStyle"
         android:background="@color/md_white_1000"
-        android:foreground="?selectableItemBackground"
-        android:text="" />
+        android:foreground="?selectableItemBackground" />
 
     <View
         android:layout_width="match_parent"
