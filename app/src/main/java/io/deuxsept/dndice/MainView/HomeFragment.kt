@@ -190,7 +190,7 @@ class HomeFragment : Fragment() {
             if (data_stack.size - data_stack.lastIndexOf("+") > 4 && data_stack.size - data_stack.lastIndexOf("-") > 4)
                 return
 
-        data_stack.push(when(view.id) {
+        push_with_auto_symbols(when(view.id) {
             R.id.button_0 -> "0"
             R.id.button_1 -> "1"
             R.id.button_2 -> "2"
@@ -216,6 +216,17 @@ class HomeFragment : Fragment() {
         })
 
         refresh_formula()
+    }
+
+    fun push_with_auto_symbols(value: String) {
+        if(data_stack.size > 0) {
+            val last = data_stack.peek()
+
+            if (last.contains('d') && value != "+" && value != "-")
+                data_stack.push("+")
+        }
+
+        data_stack.push(value)
     }
 
     fun refresh_formula() {

@@ -26,12 +26,16 @@
             android:layout_width="wrap_content" android:layout_height="wrap_content"
             android:text="formula"
             android:textSize="16sp"
-            android:textColor="?android:textColorPrimary"/>
+            android:textColor="?android:textColorPrimary"
+            android:ellipsize="end"
+            android:maxLength="20"/>
 
         <TextView
             android:id="@+id/recent_detail"
             android:layout_width="wrap_content" android:layout_height="wrap_content"
-            android:text="detail"/>
+            android:text="detail"
+            android:ellipsize="end"
+            android:maxLength="40"/>
 
         <TextView android:id="@+id/recent_timestamp"
             android:layout_width="wrap_content" android:layout_height="wrap_content"
