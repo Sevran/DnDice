@@ -1,10 +1,12 @@
-package io.deuxsept.dndice.DiceLogic
+package io.deuxsept.dndice.Model
+
+import java.util.*
 
 /**
  * Created by Flo
  * 09/08/2016.
  */
-class Dice {
+class Dice: IRollable {
     /**
      * Type of dice (e.g. d20, d10, d4, d<n> where <n> is <dice_type>)
      */
@@ -31,5 +33,16 @@ class Dice {
             is Dice -> { this.dice_rolls == other.dice_rolls && this.dice_type == other.dice_type }
             else -> { false }
         }
+    }
+
+    override fun roll(): List<Int> {
+        var rng: Random = Random()
+
+        var rolls_for_item: MutableList<Int> = mutableListOf()
+        for (i in 0..Math.abs(dice_rolls) - 1) {
+            rolls_for_item.add((rng.nextInt(dice_type) + 1) * Integer.signum(dice_rolls))
+        }
+
+        return rolls_for_item
     }
 }

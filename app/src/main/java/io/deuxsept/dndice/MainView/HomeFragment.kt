@@ -13,7 +13,7 @@ import android.view.WindowManager
 import android.view.animation.*
 import android.widget.TextView
 import io.deuxsept.dndice.Database.DatabaseHelper
-import io.deuxsept.dndice.DiceLogic.DiceRoll
+import io.deuxsept.dndice.Model.DiceRoll
 import io.deuxsept.dndice.Model.RollModel
 import io.deuxsept.dndice.R
 import io.deuxsept.dndice.Utils.Utils

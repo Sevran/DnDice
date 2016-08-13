@@ -1,4 +1,4 @@
-package io.deuxsept.dndice.DiceLogic
+package io.deuxsept.dndice.Model
 
 /**
  * Created by Flo
