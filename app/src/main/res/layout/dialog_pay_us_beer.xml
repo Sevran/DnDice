@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.v7.widget.AppCompatImageView
+        android:layout_width="match_parent" android:layout_height="148dp"
+        app:srcCompat="@drawable/ic_local_bar_24px"
+        android:background="@color/colorPrimaryDark"
+        android:tint="@color/md_white_1000"
+        android:padding="24dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="If you want to support us, please share the app !\nIf you want to do more, you can get us a drink !"
+        android:textColor="?android:textColorPrimary"
+        android:layout_margin="16dp"/>
+
+    <LinearLayout
+        android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_margin="16dp">
+
+        <EditText
+            android:layout_width="56dp" android:layout_height="wrap_content"
+            android:enabled="false"
+            android:inputType="number"
+            android:hint="3"
+            android:minEms="3"
+            android:maxEms="5"
+            android:layout_marginEnd="8dp"/>
+
+        <android.support.v7.widget.AppCompatImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@drawable/ic_euro_symbol_24px" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="donate"
+            style="@style/Base.Widget.AppCompat.Button.Colored"
+            android:layout_marginStart="16dp"/>
+
+    </LinearLayout>
+
+</LinearLayout>

@@ -1,5 +1,6 @@
 package io.deuxsept.dndice.MainView
 
+import android.app.Dialog
 import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
@@ -10,6 +11,7 @@ import android.support.v4.app.Fragment
 import android.support.v4.view.GravityCompat
 import android.support.v4.widget.DrawerLayout
 import android.support.v7.app.ActionBarDrawerToggle
+import android.support.v7.app.AlertDialog
 import android.view.MenuItem
 import android.view.View
 import io.deuxsept.dndice.R
@@ -84,7 +86,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 shareApp()
             }
             R.id.nav_beer -> {
-
+                payUsABeer()
             }
         }
         mDrawer.closeDrawer(GravityCompat.START)
@@ -114,5 +116,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "DndDice Android App")
         sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody)
         startActivity(Intent.createChooser(sharingIntent, "Share via"))
+    }
+
+    fun payUsABeer() {
+        val dialog: Dialog = Dialog(this)
+        dialog.setContentView(R.layout.dialog_pay_us_beer)
+        dialog.show()
     }
 }
