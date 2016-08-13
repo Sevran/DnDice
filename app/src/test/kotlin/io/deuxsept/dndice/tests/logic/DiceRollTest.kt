@@ -1,7 +1,7 @@
 package io.deuxsept.dndice.tests.logic
 
-import io.deuxsept.dndice.Main.Dice
-import io.deuxsept.dndice.Main.DiceRoll
+import io.deuxsept.dndice.DiceLogic.Dice
+import io.deuxsept.dndice.DiceLogic.DiceRoll
 import org.junit.Assert;
 import org.junit.Test;
 

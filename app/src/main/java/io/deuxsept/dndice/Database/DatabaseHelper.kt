@@ -6,12 +6,13 @@ import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import io.deuxsept.dndice.Model.RollModel
 import io.deuxsept.dndice.Utils.Utils
+import java.util.*
 
 /**
  * Created by Luo
  * 09/08/2016.
  */
-class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, "rolls.db", null, 4) {
+class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, "rolls.db", null, 5) {
 
     val TAG = "DatabaseHelper"
 
@@ -22,6 +23,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, "rolls.db", n
     val KEY_RECENT_FORMULA = "formula"
     val KEY_RECENT_RESULT = "result"
     val KEY_RECENT_DETAIL = "detail"
+    val KEY_RECENT_FAVORITE = "favorite"
     val KEY_RECENT_TIMESTAMP = "timestamp"
 
     val KEY_FAVORITES_ID = "id"
@@ -34,6 +36,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, "rolls.db", n
                     $KEY_RECENT_FORMULA TEXT,
                     $KEY_RECENT_RESULT TEXT,
                     $KEY_RECENT_DETAIL TEXT,
+                    $KEY_RECENT_FAVORITE INTEGER,
                     $KEY_RECENT_TIMESTAMP INTEGER)"""
 
     val DATABASE_CREATE_FAVORITES = """
@@ -44,17 +47,24 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, "rolls.db", n
 
 
     override fun onCreate(db: SQLiteDatabase) {
+        create(db)
+    }
+
+    fun create(db: SQLiteDatabase) {
         Utils.log_i(TAG, "Creating: $DATABASE_CREATE_RECENT")
         db.execSQL(DATABASE_CREATE_RECENT)
         Utils.log_i(TAG, "Creating: $DATABASE_CREATE_FAVORITES")
         db.execSQL(DATABASE_CREATE_FAVORITES)
     }
 
-    override fun onUpgrade(db: SQLiteDatabase, i: Int, i1: Int) {
-        Utils.log_i(TAG, "Dropping: $DATABASE_CREATE_RECENT")
-        db.execSQL("DROP TABLE IF EXISTS $DATABASE_CREATE_RECENT")
-        Utils.log_i(TAG, "Dropping: $DATABASE_CREATE_FAVORITES")
-        db.execSQL("DROP TABLE IF EXISTS $DATABASE_CREATE_FAVORITES")
+    override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
+        if (oldVersion != newVersion) {
+            Utils.log_i(TAG, "Dropping: $TABLE_RECENT")
+            db.execSQL("DROP TABLE IF EXISTS $TABLE_RECENT;")
+            Utils.log_i(TAG, "Dropping: $TABLE_FAVORITES")
+            db.execSQL("DROP TABLE IF EXISTS $TABLE_FAVORITES;")
+            create(db)
+        }
     }
 
     companion object {
@@ -67,9 +77,29 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, "rolls.db", n
         }
     }
 
-    fun getAllRecentRolls(): Int {
-        val BOOKING_SELECT_QUERY = String.format("SELECT count(*) FROM %s", TABLE_RECENT)
-        val cursor = readableDatabase.rawQuery(BOOKING_SELECT_QUERY, null)
+    fun getAllRecentRolls(): List<RollModel> {
+        val ROLL_SELECT_QUERY = String.format("SELECT * FROM %s ORDER BY %s DESC", TABLE_RECENT, KEY_RECENT_ID)
+        val rolls: MutableList<RollModel> = ArrayList()
+        val cursor = readableDatabase.rawQuery(ROLL_SELECT_QUERY, null)
+            if (cursor.moveToFirst()) {
+                do {
+                    rolls.add(RollModel(
+                            cursor.getString(cursor.getColumnIndex(KEY_RECENT_FORMULA)),
+                            cursor.getString(cursor.getColumnIndex(KEY_RECENT_RESULT)),
+                            cursor.getString(cursor.getColumnIndex(KEY_RECENT_DETAIL)),
+                            cursor.getInt(cursor.getColumnIndex(KEY_RECENT_ID)),
+                            cursor.getLong(cursor.getColumnIndex(KEY_RECENT_TIMESTAMP)),
+                            (cursor.getInt(cursor.getColumnIndex(KEY_RECENT_FAVORITE)) == 1)
+                    ))
+                } while(cursor.moveToNext())
+            }
+        cursor.close()
+        return rolls
+    }
+
+    fun getNbRecentRolls(): Int {
+        val ROLL_SELECT_QUERY = String.format("SELECT count(*) FROM %s", TABLE_RECENT)
+        val cursor = readableDatabase.rawQuery(ROLL_SELECT_QUERY, null)
         cursor.moveToFirst()
         val nb = cursor.getInt(0)
         cursor.close()
@@ -77,7 +107,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, "rolls.db", n
     }
 
     fun addRecentRoll(roll: RollModel) {
-        if (getAllRecentRolls() >=  100) deleteOutdatedRoll()
+        if (getNbRecentRolls() >=  100) deleteOutdatedRoll()
         val values = ContentValues()
         values.put(KEY_RECENT_FORMULA, roll.formula)
         values.put(KEY_RECENT_RESULT, roll.result)

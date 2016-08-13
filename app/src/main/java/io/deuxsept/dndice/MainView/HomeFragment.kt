@@ -1,4 +1,4 @@
-package io.deuxsept.dndice.Main
+package io.deuxsept.dndice.MainView
 
 import android.content.Context
 import android.os.Bundle
@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.TextView
 import io.deuxsept.dndice.Database.DatabaseHelper
+import io.deuxsept.dndice.DiceLogic.DiceRoll
 import io.deuxsept.dndice.Model.RollModel
 import io.deuxsept.dndice.R
 import io.deuxsept.dndice.Utils.Utils
@@ -70,8 +71,10 @@ class HomeFragment : Fragment() {
         mRollButton = view.findViewById(R.id.display)
         mRollButton = view.findViewById(R.id.roll_button)
         mRollButton.setOnClickListener {
-            executeRoll()
-            openResultView()
+            if (data_stack.size > 0) {
+                executeRoll()
+                openResultView()
+            }
         }
 
         initResultViewVars(view)
@@ -81,6 +84,7 @@ class HomeFragment : Fragment() {
 
     companion object {
         private var mFragment: HomeFragment? = null
+        var mResultViewOpened: Boolean = false
 
         fun newInstance(): HomeFragment {
             if (mFragment == null) {
@@ -100,12 +104,12 @@ class HomeFragment : Fragment() {
         mDb.addRecentRoll(RollModel(mFormula.text.toString(), mResult.text.toString(), mDetail.text.toString()))
     }
 
-    //todo Add to back stack so when the user press back, the result screen hide
     fun openResultView() {
         Utils.circularReveal(mResultView, width/2, height)
         mFavoriteFab.show()
         mCloseResFab.show()
         mReplayFab.show()
+        mResultViewOpened = true
     }
 
     fun initResultViewVars(view: View) {
@@ -140,6 +144,7 @@ class HomeFragment : Fragment() {
         Utils.circularUnreveal(mResultView, mResultView.width/2, fabPos.toInt())
         data_stack.clear()
         refresh_formula()
+        mResultViewOpened = false
     }
 
     fun push_element_to_stack(view: View) {

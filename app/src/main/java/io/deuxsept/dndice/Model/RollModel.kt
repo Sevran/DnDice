@@ -5,4 +5,9 @@ package io.deuxsept.dndice.Model
  * 11/08/2016.
  */
 
-data class RollModel(val formula: String, val result: String, val detail: String, val timestamp: String = "")
+data class RollModel(var formula: String = "",
+                     var result: String = "",
+                     var detail: String = "",
+                     var id: Int = 0,
+                     var timestamp: Long = 0,
+                     var fav: Boolean = false)

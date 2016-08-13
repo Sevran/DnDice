@@ -17,7 +17,6 @@
     <!-- Navigation Drawer -->
 
     <!-- Home Fragment -->
-    <string name="home_fragment">Salut tête de nègre</string>
     <string name="roll_button">Roll</string>
     <string name="result_title">The roll is</string>
     <!-- Home Fragment -->

@@ -1,4 +1,4 @@
-package io.deuxsept.dndice.Main
+package io.deuxsept.dndice.DiceLogic
 
 import java.util.*
 
@@ -21,6 +21,8 @@ class DiceRoll {
 
     /**
      * You better have a good reason to use this constructor, I swear. Use from_string
+     *
+     * > "Constructor is never used" ROFL
      */
     constructor() { }
 
@@ -82,12 +84,12 @@ class DiceRoll {
      * Returns a list of random values as well as the flat bonuses
      */
     fun roll(): DiceRollResult {
-        var rng: Random = Random()
-        var rolls: MutableList<List<Int>> = mutableListOf()
+        val rng: Random = Random()
+        val rolls: MutableList<List<Int>> = mutableListOf()
 
         dice_list.forEach {
             item -> run {
-                var rolls_for_item: MutableList<Int> = mutableListOf()
+                val rolls_for_item: MutableList<Int> = mutableListOf()
                 for (i in 0..Math.abs(item.dice_rolls) - 1) {
                     rolls_for_item.add((rng.nextInt(item.dice_type) + 1) * Integer.signum(item.dice_rolls))
                 }
@@ -97,7 +99,7 @@ class DiceRoll {
 
         bonus_list.forEach {
             item -> run {
-                var rolls_for_item: MutableList<Int> = mutableListOf()
+                val rolls_for_item: MutableList<Int> = mutableListOf()
                 rolls_for_item.add(item)
                 rolls.add(rolls_for_item)
             }
