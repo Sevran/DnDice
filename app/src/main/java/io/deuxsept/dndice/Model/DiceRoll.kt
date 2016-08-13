@@ -59,8 +59,8 @@ class DiceRoll {
         elements_in_roll.forEach {
             item -> run {
                 prefixed.append(when(item) {
-                    is Dice -> if (item.dice_rolls > 0) "+${item.dice_rolls}" else item.dice_rolls.toString()
-                    is FlatBonus -> if (item.bonus > 0) "+${item.bonus}" else item.bonus.toString()
+                    is Dice -> (if (item.dice_rolls > 0) "+" else "") + "${item.dice_rolls}d${item.dice_type}"
+                    is FlatBonus -> (if (item.bonus > 0) "+" else "") + "${item.bonus}"
                     else -> "panicpanicpanicpanic"
                 })
             }
