@@ -19,8 +19,14 @@
         android:tint="@color/md_blue_grey_200"/>
 
     <View
-        android:layout_width="match_parent"
-        android:layout_height="4dp"
+        android:id="@+id/display_empty_warning"
+        android:layout_width="match_parent" android:layout_height="3dp"
+        android:background="@color/md_red_A200"
+        android:alpha="0"
+        android:layout_marginTop="69dp"/>
+
+    <View
+        android:layout_width="match_parent" android:layout_height="4dp"
         android:background="@drawable/shadow_top_to_bottom"
         android:layout_below="@+id/display" />
 
@@ -289,6 +295,7 @@
         android:layout_alignParentBottom="true"
         style="?borderlessButtonStyle"
         android:background="@color/colorAccent"
+        android:foreground="?selectableItemBackgroundBorderless"
         android:textColor="@color/md_white_1000"
         android:text="@string/roll_button" />
 

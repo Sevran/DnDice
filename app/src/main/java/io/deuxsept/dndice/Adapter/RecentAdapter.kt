@@ -101,7 +101,7 @@ class RecentAdapter : RecyclerView.Adapter<RecentAdapter.ViewHolder> {
             holder.mFavButton.setColorFilter(ContextCompat.getColor(mFragment?.context, R.color.md_grey_500), PorterDuff.Mode.SRC_IN)
         }
 
-        val dateString = SimpleDateFormat("dd MMM\nHH:mm", mLocale).format(Date(model.timestamp))
+        val dateString = SimpleDateFormat("dd MMM - HH:mm", mLocale).format(Date(model.timestamp))
         holder.mTimestamp.text = dateString
 
         setAnimation(holder.mLayout, position)

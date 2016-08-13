@@ -7,4 +7,13 @@
         <item name="android:statusBarColor">@android:color/transparent</item>
     </style>
 
+    <style name="PinkRippleTheme">
+        <item name="colorControlHighlight">@color/md_pink_500</item>
+    </style>
+
+    <style name="PinkSelectableItemBackground">
+        <item name="android:theme">@style/PinkRippleTheme</item>
+        <item name="android:background">?attr/selectableItemBackgroundBorderless</item>
+    </style>
+
 </resources>

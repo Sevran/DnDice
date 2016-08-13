@@ -10,6 +10,13 @@
         android:background="@color/md_white_1000"
         android:foreground="?selectableItemBackground" />
 
+    <View
+        android:id="@+id/display_empty_warning"
+        android:layout_width="match_parent" android:layout_height="3dp"
+        android:background="@color/md_red_A200"
+        android:alpha="0"
+        android:layout_marginTop="68dp"/>
+
     <android.support.v7.widget.AppCompatImageView
         android:layout_width="32dp" android:layout_height="32dp"
         app:srcCompat="@drawable/ic_backspace_24dp"
@@ -300,6 +307,7 @@
         android:layout_alignParentBottom="true"
         style="?borderlessButtonStyle"
         android:background="@color/colorAccent"
+        android:foreground="?selectableItemBackgroundBorderless"
         android:textColor="@color/md_white_1000"
         android:text="@string/roll_button" />
 
@@ -310,7 +318,7 @@
         android:layout_width="match_parent" android:layout_height="match_parent"
         android:background="@color/colorPrimary"
         android:clickable="true"
-        android:visibility="visible">
+        android:visibility="gone">
 
         <TextView
             android:id="@+id/formula_var"

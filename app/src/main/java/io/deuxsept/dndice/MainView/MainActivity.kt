@@ -1,5 +1,6 @@
 package io.deuxsept.dndice.MainView
 
+import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 
@@ -80,7 +81,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
             }
             R.id.nav_share -> {
-
+                shareApp()
             }
             R.id.nav_beer -> {
 
@@ -104,5 +105,14 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     fun push_element_to_stack(view: View) {
         mHomeFragment.push_element_to_stack(view)
+    }
+
+    fun shareApp() {
+        val sharingIntent = Intent(android.content.Intent.ACTION_SEND)
+        sharingIntent.type = "text/plain"
+        val shareBody = "Take a look at this new SEVRAN app ! http://SEVRANDEV.io"
+        sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "DndDice Android App")
+        sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody)
+        startActivity(Intent.createChooser(sharingIntent, "Share via"))
     }
 }

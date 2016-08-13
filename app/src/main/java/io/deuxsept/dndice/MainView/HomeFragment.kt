@@ -1,6 +1,7 @@
 package io.deuxsept.dndice.MainView
 
 import android.content.Context
+import android.graphics.Interpolator
 import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
 import android.support.v4.app.Fragment
@@ -9,6 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import android.view.animation.*
 import android.widget.TextView
 import io.deuxsept.dndice.Database.DatabaseHelper
 import io.deuxsept.dndice.DiceLogic.DiceRoll
@@ -23,6 +25,8 @@ class HomeFragment : Fragment() {
      * Home Views
      */
     lateinit var mDisplay: TextView
+    lateinit var mDisplayWarning: View
+    var mDisplayWarningShowed: Boolean = false
     lateinit var mRollButton: View
 
     /**
@@ -55,6 +59,7 @@ class HomeFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view: View = inflater!!.inflate(R.layout.fragment_home, container, false)
 
+        mDisplayWarning = view.findViewById(R.id.display_empty_warning)
         mDisplay = view.findViewById(R.id.display) as TextView
         mDisplay.setOnClickListener {
             if (data_stack.size > 0) {
@@ -74,12 +79,38 @@ class HomeFragment : Fragment() {
             if (data_stack.size > 0) {
                 executeRoll()
                 openResultView()
+            } else {
+                showDisplayWarning()
             }
         }
 
         initResultViewVars(view)
 
         return view
+    }
+
+    fun showDisplayWarning() {
+        mDisplayWarningShowed = true
+        mDisplayWarning.animate()
+                .setDuration(300)
+                .alpha(1f)
+                .setInterpolator(AccelerateInterpolator())
+                .withEndAction {
+                    val blinkAnimation: AlphaAnimation = AlphaAnimation(1f, 0f)
+                    blinkAnimation.duration = 300
+                    blinkAnimation.interpolator = LinearInterpolator()
+                    blinkAnimation.repeatCount = 3
+                    blinkAnimation.repeatMode = Animation.REVERSE
+                    mDisplayWarning.startAnimation(blinkAnimation)
+                }.start()
+    }
+
+    fun hideDisplayWarning() {
+        mDisplayWarningShowed = false
+        mDisplayWarning.animate()
+                .setDuration(300)
+                .alpha(0f)
+                .setInterpolator(AccelerateInterpolator()).start()
     }
 
     companion object {
@@ -101,7 +132,12 @@ class HomeFragment : Fragment() {
         mDetail.text = result.as_readable_string()
         mResult.text = result.as_total().toString()
 
-        mDb.addRecentRoll(RollModel(mFormula.text.toString(), mResult.text.toString(), mDetail.text.toString()))
+        if (!result.as_readable_string().equals("") && !result.as_total().toString().equals(""))
+            mDb.addRecentRoll(RollModel(
+                    mFormula.text.toString(),
+                    mResult.text.toString(),
+                    mDetail.text.toString()
+            ))
     }
 
     fun openResultView() {
@@ -148,6 +184,7 @@ class HomeFragment : Fragment() {
     }
 
     fun push_element_to_stack(view: View) {
+        if (mDisplayWarningShowed) hideDisplayWarning()
         // Check if we're not trying to add too long of a number, without preventing from adding a +/-
         if (view.id != R.id.button_moins && view.id != R.id.button_plus)
             if (data_stack.size - data_stack.lastIndexOf("+") > 4 && data_stack.size - data_stack.lastIndexOf("-") > 4)

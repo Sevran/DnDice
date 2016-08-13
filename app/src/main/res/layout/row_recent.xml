@@ -5,13 +5,15 @@
     android:layout_width="match_parent" android:layout_height="wrap_content"
     android:gravity="center_vertical">
 
-    <TextView android:id="@+id/recent_timestamp"
+    <TextView
+        android:id="@+id/recent_result"
         android:layout_width="64dp" android:layout_height="wrap_content"
+        android:text="56"
+        android:textSize="22sp"
+        android:textStyle="bold"
         android:layout_marginStart="16dp"
-        android:text="timestamp"
-        android:textSize="13sp"
-        android:fontFamily="sans-serif-medium"
-        android:textColor="?android:textColorPrimary"/>
+        android:textColor="?colorPrimary"
+        android:gravity="center"/>
 
     <LinearLayout
         android:orientation="vertical"
@@ -20,21 +22,22 @@
         android:padding="16dp">
 
         <TextView
-            android:id="@+id/recent_result"
-            android:layout_width="wrap_content" android:layout_height="wrap_content"
-            android:text="result"
-            android:textSize="18sp"
-            android:textColor="?android:textColorPrimary"/>
-
-        <TextView
             android:id="@+id/recent_formula"
             android:layout_width="wrap_content" android:layout_height="wrap_content"
-            android:text="formula"/>
+            android:text="formula"
+            android:textSize="16sp"
+            android:textColor="?android:textColorPrimary"/>
 
         <TextView
             android:id="@+id/recent_detail"
             android:layout_width="wrap_content" android:layout_height="wrap_content"
             android:text="detail"/>
+
+        <TextView android:id="@+id/recent_timestamp"
+            android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text="timestamp"
+            android:layout_marginTop="4dp"
+            android:textSize="13sp"/>
 
     </LinearLayout>
 
@@ -42,7 +45,7 @@
         android:id="@+id/recent_fav_button"
         android:layout_width="wrap_content" android:layout_height="wrap_content"
         app:srcCompat="@drawable/ic_favorite_outlined_24dp"
-        android:background="?selectableItemBackgroundBorderless"
+        style="@style/PinkSelectableItemBackground"
         android:layout_marginEnd="16dp" android:padding="16dp"/>
 
 </LinearLayout>
