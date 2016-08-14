@@ -9,13 +9,24 @@
         android:layout_width="match_parent" android:layout_height="72dp"
         style="?borderlessButtonStyle"
         android:background="@color/md_white_1000"
-        android:foreground="?selectableItemBackground" />
+        android:paddingStart="72dp" android:paddingEnd="72dp"
+        android:textSize="22sp"/>
 
     <android.support.v7.widget.AppCompatImageView
-        android:layout_width="32dp" android:layout_height="32dp"
+        android:id="@+id/fav_button"
+        android:layout_width="72dp" android:layout_height="72dp"
+        app:srcCompat="@drawable/ic_favorite_24dp"
+        android:padding="22dp"
+        android:foreground="?selectableItemBackgroundBorderless"
+        android:tint="@color/md_pink_200"/>
+
+    <android.support.v7.widget.AppCompatImageView
+        android:id="@+id/backspace_button"
+        android:layout_width="72dp" android:layout_height="72dp"
         app:srcCompat="@drawable/ic_backspace_24dp"
         android:layout_alignParentEnd="true"
-        android:layout_marginEnd="16dp" android:layout_marginTop="20dp"
+        android:padding="22dp"
+        android:foreground="?selectableItemBackgroundBorderless"
         android:tint="@color/md_blue_grey_200"/>
 
     <View

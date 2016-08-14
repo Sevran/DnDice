@@ -1,15 +1,12 @@
 package io.deuxsept.dndice.MainView
 
 import android.content.Context
-import android.graphics.Interpolator
 import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
 import android.support.v4.app.Fragment
+import android.support.v7.widget.PopupMenu
 import android.util.DisplayMetrics
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.view.WindowManager
+import android.view.*
 import android.view.animation.*
 import android.widget.TextView
 import io.deuxsept.dndice.Database.DatabaseHelper
@@ -25,6 +22,8 @@ class HomeFragment : Fragment() {
      * Home Views
      */
     lateinit var mDisplay: TextView
+    lateinit var mBackspace: View
+    lateinit var mFav: View
     lateinit var mDisplayWarning: View
     var mDisplayWarningShowed: Boolean = false
     lateinit var mRollButton: View
@@ -61,16 +60,30 @@ class HomeFragment : Fragment() {
 
         mDisplayWarning = view.findViewById(R.id.display_empty_warning)
         mDisplay = view.findViewById(R.id.display) as TextView
-        mDisplay.setOnClickListener {
+        mBackspace = view.findViewById(R.id.backspace_button)
+        mBackspace.setOnClickListener {
             if (data_stack.size > 0) {
                 data_stack.pop()
                 refresh_formula()
             }
         }
-        mDisplay.setOnLongClickListener {
+        mBackspace.setOnLongClickListener {
             data_stack.clear()
             refresh_formula()
             true
+        }
+
+        mFav = view.findViewById(R.id.fav_button)
+        mFav.setOnClickListener {
+            val menu = PopupMenu(context, mFav)
+            menu.setOnMenuItemClickListener { item ->
+                push_with_auto_symbols(item.title.toString())
+                true
+            }
+            //todo take real data from db
+            menu.menu.add("40 + 5")
+            menu.menu.add("454 + 5")
+            menu.show()
         }
 
         mRollButton = view.findViewById(R.id.display)
@@ -201,8 +214,8 @@ class HomeFragment : Fragment() {
             R.id.button_7 -> "7"
             R.id.button_8 -> "8"
             R.id.button_9 -> "9"
-            R.id.button_plus -> "+"
-            R.id.button_moins -> "-"
+            R.id.button_plus -> " + "
+            R.id.button_moins -> " - "
             R.id.d2 -> "d2"
             R.id.d3 -> "d3"
             R.id.d4 -> "d4"
@@ -218,8 +231,10 @@ class HomeFragment : Fragment() {
         refresh_formula()
     }
 
+
+    //todo make it work for multiple symbols like "3d6 + 5 + 4"
     fun push_with_auto_symbols(value: String) {
-        if(data_stack.size > 0) {
+        if (data_stack.size > 0) {
             val last = data_stack.peek()
 
             if (last.contains('d') && value != "+" && value != "-")

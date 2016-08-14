@@ -27,7 +27,6 @@
 
         <EditText
             android:layout_width="56dp" android:layout_height="wrap_content"
-            android:enabled="false"
             android:inputType="number"
             android:hint="3"
             android:minEms="3"

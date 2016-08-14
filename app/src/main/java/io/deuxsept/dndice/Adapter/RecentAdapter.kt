@@ -77,10 +77,17 @@ class RecentAdapter : RecyclerView.Adapter<RecentAdapter.ViewHolder> {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecentAdapter.ViewHolder {
         val itemView = LayoutInflater.from(mFragment?.context).inflate(R.layout.row_recent, parent, false)
         return ViewHolder(itemView, object : ViewHolder.onItemClick {
-            override fun onClick(recentView: View, position: Int) {
+            override fun onClick(caller: View, position: Int) {
                 val model: RollModel = mList[position]
-                model.fav = !model.fav
-                notifyItemChanged(position)
+                val fav: Boolean = !model.fav
+                var i: Int = 0
+                for (m in mList) {
+                    if (m.formula == mList[position].formula) {
+                        m.fav = fav
+                        notifyItemChanged(i)
+                    }
+                    i++
+                }
             }
         })
     }
@@ -119,30 +126,9 @@ class RecentAdapter : RecyclerView.Adapter<RecentAdapter.ViewHolder> {
         holder.clearAnimation()
     }
 
-    fun removeItem(id: Int) {
-        var i: Int = 0
-        for (id1 in mList) {
-            if (id1.id == id) {
-                mList.remove(id1)
-                notifyItemRemoved(i)
-                break
-            }
-            i++
-        }
-    }
-
     fun addAll(models: List<RollModel>) {
         mList.addAll(models)
         notifyDataSetChanged()
-    }
-
-    fun addItemAndReorder(model: RollModel) {
-        val tempList = ArrayList<RollModel>()
-        tempList.addAll(mList)
-        tempList.add(model)
-        Collections.sort(tempList, { r1, r2 -> r1.timestamp.compareTo(r2.timestamp) })
-        mList.add(tempList.indexOf(model), model)
-        notifyItemInserted(tempList.indexOf(model))
     }
 
     override fun getItemCount(): Int {
