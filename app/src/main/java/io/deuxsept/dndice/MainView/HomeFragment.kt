@@ -237,8 +237,8 @@ class HomeFragment : Fragment() {
         if (data_stack.size > 0) {
             val last = data_stack.peek()
 
-            if (last.contains('d') && value != "+" && value != "-")
-                data_stack.push("+")
+            if (last.contains('d') && value != " + " && value != " - ")
+                data_stack.push(" + ")
         }
 
         data_stack.push(value)
