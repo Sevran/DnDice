@@ -182,7 +182,7 @@ class HomeFragment : Fragment() {
     }
 
     fun favoriteRoll() {
-
+            mDb.addFavoriteRoll(RollModel(mFormula.text.toString()))
     }
 
     fun closeResultView() {

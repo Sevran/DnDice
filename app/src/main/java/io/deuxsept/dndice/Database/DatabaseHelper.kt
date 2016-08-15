@@ -12,7 +12,7 @@ import java.util.*
  * Created by Luo
  * 09/08/2016.
  */
-class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, "rolls.db", null, 5) {
+class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, "rolls.db", null, 6) {
 
     val TAG = "DatabaseHelper"
 
@@ -28,7 +28,6 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, "rolls.db", n
 
     val KEY_FAVORITES_ID = "id"
     val KEY_FAVORITES_FORMULA = "formula"
-    val KEY_FAVORITES_TIMESTAMP = "timestamp"
 
     val DATABASE_CREATE_RECENT = """
         CREATE TABLE if not exists $TABLE_RECENT (
@@ -42,8 +41,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, "rolls.db", n
     val DATABASE_CREATE_FAVORITES = """
         CREATE TABLE if not exists $TABLE_FAVORITES (
                     $KEY_FAVORITES_ID INTEGER PRIMARY KEY AUTOINCREMENT,
-                    $KEY_FAVORITES_FORMULA TEXT,
-                    $KEY_FAVORITES_TIMESTAMP INTEGER)"""
+                    $KEY_FAVORITES_FORMULA TEXT)"""
 
 
     override fun onCreate(db: SQLiteDatabase) {
@@ -118,12 +116,40 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, "rolls.db", n
     }
 
     fun deleteOutdatedRoll() {
-        val BOOKING_SELECT_QUERY = String.format("SELECT %s FROM %s ORDER BY id LIMIT 1", KEY_RECENT_ID, TABLE_RECENT)
-        val cursor = readableDatabase.rawQuery(BOOKING_SELECT_QUERY, null)
+        val OUTDATED_QUERY = String.format("SELECT %s FROM %s ORDER BY id LIMIT 1", KEY_RECENT_ID, TABLE_RECENT)
+        val cursor = readableDatabase.rawQuery(OUTDATED_QUERY, null)
         cursor.moveToFirst()
         val id = cursor.getInt(cursor.getColumnIndex(KEY_RECENT_ID))
         cursor.close()
         writableDatabase.delete(TABLE_RECENT, "$KEY_RECENT_ID = " + id, null)
         Utils.log_d("Database", "Recent roll deleted with id : " + id)
+    }
+
+    fun getAllFavoritesRolls(): List<RollModel> {
+        val ROLL_SELECT_QUERY = String.format("SELECT * FROM %s ORDER BY %s DESC", TABLE_FAVORITES, KEY_FAVORITES_ID)
+        val rolls: MutableList<RollModel> = ArrayList()
+        val cursor = readableDatabase.rawQuery(ROLL_SELECT_QUERY, null)
+        if (cursor.moveToFirst()) {
+            do {
+                rolls.add(RollModel(
+                        cursor.getString(cursor.getColumnIndex(KEY_FAVORITES_FORMULA)),"","",
+                        cursor.getInt(cursor.getColumnIndex(KEY_FAVORITES_ID))
+                ))
+            } while(cursor.moveToNext())
+        }
+        cursor.close()
+        return rolls
+    }
+
+    fun addFavoriteRoll(roll: RollModel) {
+        val values = ContentValues()
+        values.put(KEY_FAVORITES_FORMULA, roll.formula)
+        val id = writableDatabase.insert(TABLE_FAVORITES, null, values)
+        Utils.log_d("Database", "Fav roll inserted with id : " + id)
+    }
+
+    fun deleteFavoriteRoll(rollId: Int) {
+        writableDatabase.delete(TABLE_FAVORITES, "$KEY_FAVORITES_ID = " + rollId, null)
+        Utils.log_d("Database", "Fav roll deleted with id : " + rollId)
     }
 }

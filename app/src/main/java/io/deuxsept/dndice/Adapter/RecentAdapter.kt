@@ -24,7 +24,7 @@ class RecentAdapter : RecyclerView.Adapter<RecentAdapter.ViewHolder> {
 
     private var mFragment: RecentFragment? = null
     private val mList = ArrayList<RollModel>()
-    private var lastPosition = 0
+    private var lastPosition = -1
     var mLocale: Locale? = null
 
     companion object {

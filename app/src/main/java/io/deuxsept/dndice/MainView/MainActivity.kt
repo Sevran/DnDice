@@ -11,7 +11,6 @@ import android.support.v4.app.Fragment
 import android.support.v4.view.GravityCompat
 import android.support.v4.widget.DrawerLayout
 import android.support.v7.app.ActionBarDrawerToggle
-import android.support.v7.app.AlertDialog
 import android.view.MenuItem
 import android.view.View
 import io.deuxsept.dndice.R
@@ -74,7 +73,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 switchFragment(HomeFragment.newInstance(), R.string.app_name, HOME_FRAGMENT)
             }
             R.id.nav_favorite -> {
-
+                switchFragment(FavoriteFragment.newInstance(), R.string.nav_favorites, FAVORITE_FRAGMENT)
             }
             R.id.nav_recent -> {
                 switchFragment(RecentFragment.newInstance(), R.string.nav_last_rolls, RECENT_FRAGMENT)
@@ -105,6 +104,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
     }
 
+    @Suppress("unused")
     fun push_element_to_stack(view: View) {
         mHomeFragment.push_element_to_stack(view)
     }
