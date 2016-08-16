@@ -214,8 +214,8 @@ class HomeFragment : Fragment() {
             R.id.button_7 -> "7"
             R.id.button_8 -> "8"
             R.id.button_9 -> "9"
-            R.id.button_plus -> " + "
-            R.id.button_moins -> " - "
+            R.id.button_plus -> "+"
+            R.id.button_moins -> "-"
             R.id.d2 -> "d2"
             R.id.d3 -> "d3"
             R.id.d4 -> "d4"
@@ -231,20 +231,23 @@ class HomeFragment : Fragment() {
         refresh_formula()
     }
 
-
-    //todo make it work for multiple symbols like "3d6 + 5 + 4"
     fun push_with_auto_symbols(value: String) {
         if (data_stack.size > 0) {
             val last = data_stack.peek()
 
-            if (last.contains('d') && value != " + " && value != " - ")
-                data_stack.push(" + ")
+            if (last.contains('d') && value != "+" && value != "-")
+                data_stack.push("+")
         }
 
         data_stack.push(value)
     }
 
     fun refresh_formula() {
-        mDisplay.text = data_stack.joinToString("")
+        var formula = ""
+        data_stack.forEach {
+            item -> formula += if (item == "+" || item == "-") " $item " else item
+        }
+
+        mDisplay.text = formula
     }
 }
