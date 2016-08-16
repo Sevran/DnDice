@@ -45,15 +45,15 @@ class FavoriteFragment : Fragment(), FavoriteAdapter.OnDragStartListener {
     }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view: View = inflater!!.inflate(R.layout.fragment_recent, container, false)
+        val view: View = inflater!!.inflate(R.layout.fragment_favorite, container, false)
 
-        mNoneView = view.findViewById(R.id.recent_none_view)
-        mRecyclerView = view.findViewById(R.id.recent_recycler) as RecyclerView
+        mNoneView = view.findViewById(R.id.favorite_none_view)
+        mRecyclerView = view.findViewById(R.id.favorite_recycler) as RecyclerView
 
         val layoutManager = LinearLayoutManager(context)
         layoutManager.orientation = LinearLayoutManager.VERTICAL
         mRecyclerView.layoutManager = layoutManager
-        mAdapter = FavoriteAdapter(this, this)
+        mAdapter = FavoriteAdapter(this, view, this)
         mRecyclerView.adapter = mAdapter
 
         val callback: ItemTouchHelper.Callback = SimpleItemTouchHelperCallback(mAdapter)

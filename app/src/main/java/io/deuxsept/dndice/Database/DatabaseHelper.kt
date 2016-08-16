@@ -28,6 +28,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, "rolls.db", n
 
     val KEY_FAVORITES_ID = "id"
     val KEY_FAVORITES_FORMULA = "formula"
+    val KEY_FAVORITES_NAME = "name"
 
     val DATABASE_CREATE_RECENT = """
         CREATE TABLE if not exists $TABLE_RECENT (
@@ -41,6 +42,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, "rolls.db", n
     val DATABASE_CREATE_FAVORITES = """
         CREATE TABLE if not exists $TABLE_FAVORITES (
                     $KEY_FAVORITES_ID INTEGER PRIMARY KEY AUTOINCREMENT,
+                    $KEY_FAVORITES_NAME TEXT,
                     $KEY_FAVORITES_FORMULA TEXT)"""
 
 
@@ -68,9 +70,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, "rolls.db", n
     companion object {
         private var mDatabaseHelper: DatabaseHelper? = null
         fun getInstance(context: Context): DatabaseHelper? {
-            if (mDatabaseHelper == null) {
-                mDatabaseHelper = DatabaseHelper(context)
-            }
+            if (mDatabaseHelper == null) mDatabaseHelper = DatabaseHelper(context)
             return mDatabaseHelper
         }
     }
@@ -79,18 +79,18 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, "rolls.db", n
         val ROLL_SELECT_QUERY = String.format("SELECT * FROM %s ORDER BY %s DESC", TABLE_RECENT, KEY_RECENT_ID)
         val rolls: MutableList<RollModel> = ArrayList()
         val cursor = readableDatabase.rawQuery(ROLL_SELECT_QUERY, null)
-            if (cursor.moveToFirst()) {
-                do {
-                    rolls.add(RollModel(
-                            cursor.getString(cursor.getColumnIndex(KEY_RECENT_FORMULA)),
-                            cursor.getString(cursor.getColumnIndex(KEY_RECENT_RESULT)),
-                            cursor.getString(cursor.getColumnIndex(KEY_RECENT_DETAIL)),
-                            cursor.getInt(cursor.getColumnIndex(KEY_RECENT_ID)),
-                            cursor.getLong(cursor.getColumnIndex(KEY_RECENT_TIMESTAMP)),
-                            (cursor.getInt(cursor.getColumnIndex(KEY_RECENT_FAVORITE)) == 1)
-                    ))
-                } while(cursor.moveToNext())
-            }
+        if (cursor.moveToFirst()) {
+            do {
+                rolls.add(RollModel(
+                        cursor.getString(cursor.getColumnIndex(KEY_RECENT_FORMULA)),
+                        cursor.getString(cursor.getColumnIndex(KEY_RECENT_RESULT)),
+                        cursor.getString(cursor.getColumnIndex(KEY_RECENT_DETAIL)), "",
+                        cursor.getInt(cursor.getColumnIndex(KEY_RECENT_ID)),
+                        cursor.getLong(cursor.getColumnIndex(KEY_RECENT_TIMESTAMP)),
+                        (cursor.getInt(cursor.getColumnIndex(KEY_RECENT_FAVORITE)) == 1)
+                ))
+            } while(cursor.moveToNext())
+        }
         cursor.close()
         return rolls
     }
@@ -133,6 +133,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, "rolls.db", n
             do {
                 rolls.add(RollModel(
                         cursor.getString(cursor.getColumnIndex(KEY_FAVORITES_FORMULA)),"","",
+                        cursor.getString(cursor.getColumnIndex(KEY_FAVORITES_NAME)),
                         cursor.getInt(cursor.getColumnIndex(KEY_FAVORITES_ID))
                 ))
             } while(cursor.moveToNext())
@@ -141,9 +142,24 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, "rolls.db", n
         return rolls
     }
 
+    fun getFavorite(id: Int): RollModel? {
+        val ROLL_SELECT_QUERY = String.format("SELECT * FROM %s WHERE %s = $id", TABLE_FAVORITES, KEY_FAVORITES_ID)
+        var roll:RollModel? = null
+        val cursor = readableDatabase.rawQuery(ROLL_SELECT_QUERY, null)
+        if (cursor.moveToFirst())
+            roll = RollModel(
+                    cursor.getString(cursor.getColumnIndex(KEY_FAVORITES_FORMULA)),"","",
+                    cursor.getString(cursor.getColumnIndex(KEY_FAVORITES_NAME)),
+                    cursor.getInt(cursor.getColumnIndex(KEY_FAVORITES_ID))
+            )
+        cursor.close()
+        return roll
+    }
+
     fun addFavoriteRoll(roll: RollModel) {
         val values = ContentValues()
         values.put(KEY_FAVORITES_FORMULA, roll.formula)
+        values.put(KEY_FAVORITES_NAME, roll.name)
         val id = writableDatabase.insert(TABLE_FAVORITES, null, values)
         Utils.log_d("Database", "Fav roll inserted with id : " + id)
     }

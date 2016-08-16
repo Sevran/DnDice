@@ -1,7 +1,8 @@
 package io.deuxsept.dndice.Adapter
 
-import android.graphics.Color
 import android.os.Build
+import android.support.design.widget.Snackbar
+import android.support.v4.content.ContextCompat
 import android.support.v4.view.MotionEventCompat
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -11,11 +12,11 @@ import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import android.widget.ImageView
 import android.widget.TextView
+import io.deuxsept.dndice.Database.DatabaseHelper
 import io.deuxsept.dndice.MainView.FavoriteFragment
 import io.deuxsept.dndice.Model.RollModel
 import io.deuxsept.dndice.R
 import io.deuxsept.dndice.Utils.ItemTouchHelperAdapter
-import io.deuxsept.dndice.Utils.ItemTouchHelperViewHolder
 import java.util.*
 
 /**
@@ -25,21 +26,24 @@ import java.util.*
 
 class FavoriteAdapter : RecyclerView.Adapter<FavoriteAdapter.ViewHolder>, ItemTouchHelperAdapter {
 
-    private var mFragment: FavoriteFragment? = null
+    private lateinit var mFragment: FavoriteFragment
+    private lateinit var mView: View
     private val mList = ArrayList<RollModel>()
     private var lastPosition = -1
     private lateinit var mDragStartListener: OnDragStartListener
-    var mLocale: Locale? = null
+    private lateinit var mLocale: Locale
+    private lateinit var mDb: DatabaseHelper
 
     @Suppress("DEPRECATION")
-    constructor(fragment: FavoriteFragment, dragStartListener: OnDragStartListener) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+    constructor(fragment: FavoriteFragment, view: View, dragStartListener: OnDragStartListener) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
             mLocale = fragment.context.resources.configuration.locales.get(0)
-        } else {
+        else
             mLocale = fragment.context.resources.configuration.locale
-        }
         mFragment = fragment
+        mView = view
         mDragStartListener = dragStartListener
+        mDb = DatabaseHelper(fragment.context)
     }
 
     interface OnDragStartListener {
@@ -47,7 +51,6 @@ class FavoriteAdapter : RecyclerView.Adapter<FavoriteAdapter.ViewHolder>, ItemTo
     }
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-
         var mLayout: View
         internal var mFormula: TextView
         internal var mReorderButton: ImageView
@@ -64,7 +67,7 @@ class FavoriteAdapter : RecyclerView.Adapter<FavoriteAdapter.ViewHolder>, ItemTo
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FavoriteAdapter.ViewHolder {
-        val itemView = LayoutInflater.from(mFragment?.context).inflate(R.layout.row_favorite, parent, false)
+        val itemView = LayoutInflater.from(mFragment.context).inflate(R.layout.row_favorite, parent, false)
         return ViewHolder(itemView)
     }
 
@@ -72,9 +75,8 @@ class FavoriteAdapter : RecyclerView.Adapter<FavoriteAdapter.ViewHolder>, ItemTo
         val model: RollModel = mList[position]
         holder.mFormula.text = model.formula
         holder.mReorderButton.setOnTouchListener { v, event ->
-            if (MotionEventCompat.getActionMasked(event) === MotionEvent.ACTION_DOWN) {
+            if (MotionEventCompat.getActionMasked(event) === MotionEvent.ACTION_DOWN)
                 mDragStartListener.onDragStarted(holder)
-            }
             false
         }
         setAnimation(holder.mLayout, position)
@@ -82,7 +84,7 @@ class FavoriteAdapter : RecyclerView.Adapter<FavoriteAdapter.ViewHolder>, ItemTo
 
     private fun setAnimation(viewToAnimate: View, position: Int) {
         if (position > lastPosition) {
-            val animation = AnimationUtils.loadAnimation(mFragment?.context, R.anim.item_slide_in_from_left)
+            val animation = AnimationUtils.loadAnimation(mFragment.context, R.anim.item_slide_in_from_left)
             viewToAnimate.startAnimation(animation)
             lastPosition = position
         }
@@ -93,8 +95,19 @@ class FavoriteAdapter : RecyclerView.Adapter<FavoriteAdapter.ViewHolder>, ItemTo
     }
 
     override fun onItemDismiss(position: Int) {
+        val model: RollModel = mList[position]
+        mDb.deleteFavoriteRoll(model.id)
         mList.removeAt(position)
         notifyItemRemoved(position)
+        mFragment.shouldShowEmptyState()
+        val snackbar = Snackbar.make(mView, "Favorite deleted.", Snackbar.LENGTH_LONG).setAction("UNDO") {
+            mDb.addFavoriteRoll(model)
+            mList.add(model)
+            notifyItemInserted(mList.size)
+            mFragment.shouldShowEmptyState()
+        }
+        snackbar.setActionTextColor(ContextCompat.getColor(mFragment.context, R.color.colorAccent))
+        snackbar.show()
     }
 
     override fun onItemMove(fromPosition: Int, toPosition: Int) {

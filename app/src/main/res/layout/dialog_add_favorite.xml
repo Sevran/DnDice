@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="250dp"
+    android:layout_height="wrap_content">
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:layout_margin="16dp">
+
+        <EditText
+            android:id="@+id/roll_name"
+            android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:hint="Favorite name"/>
+
+    </android.support.design.widget.TextInputLayout>
+
+    <Button
+        android:id="@+id/add_roll_button"
+        android:layout_width="match_parent" android:layout_height="56dp"
+        android:text="Add roll"
+        android:textColor="@color/md_white_1000"
+        style="?borderlessButtonStyle"
+        android:background="@color/colorAccent"
+        android:foreground="?selectableItemBackground"/>
+
+</LinearLayout>

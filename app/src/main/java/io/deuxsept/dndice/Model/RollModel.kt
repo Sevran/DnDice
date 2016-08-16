@@ -8,6 +8,7 @@ package io.deuxsept.dndice.Model
 data class RollModel(var formula: String = "",
                      var result: String = "",
                      var detail: String = "",
+                     var name: String = "",
                      var id: Int = 0,
                      var timestamp: Long = 0,
                      var fav: Boolean = false)

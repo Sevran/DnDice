@@ -1,5 +1,6 @@
 package io.deuxsept.dndice.MainView
 
+import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
@@ -8,6 +9,7 @@ import android.support.v7.widget.PopupMenu
 import android.util.DisplayMetrics
 import android.view.*
 import android.view.animation.*
+import android.widget.EditText
 import android.widget.TextView
 import io.deuxsept.dndice.Database.DatabaseHelper
 import io.deuxsept.dndice.Model.DiceRoll
@@ -77,12 +79,14 @@ class HomeFragment : Fragment() {
         mFav.setOnClickListener {
             val menu = PopupMenu(context, mFav)
             menu.setOnMenuItemClickListener { item ->
-                push_with_auto_symbols(item.title.toString())
+                data_stack.clear()
+                push_with_auto_symbols(mDb.getFavorite(item.itemId)?.formula)
+                refresh_formula()
                 true
             }
-            //todo take real data from db
-            menu.menu.add("40 + 5")
-            menu.menu.add("454 + 5")
+            for ((formula, result, detail, name, id) in mDb.getAllFavoritesRolls()) {
+                menu.menu.add(0, id, Menu.NONE, name)
+            }
             menu.show()
         }
 
@@ -154,6 +158,7 @@ class HomeFragment : Fragment() {
     }
 
     fun openResultView() {
+
         Utils.circularReveal(mResultView, width/2, height)
         mFavoriteFab.show()
         mCloseResFab.show()
@@ -182,7 +187,17 @@ class HomeFragment : Fragment() {
     }
 
     fun favoriteRoll() {
-            mDb.addFavoriteRoll(RollModel(mFormula.text.toString()))
+        val dialog: Dialog = Dialog(context)
+        dialog.setContentView(R.layout.dialog_add_favorite)
+        dialog.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE)
+        dialog.show()
+        val name: EditText = dialog.findViewById(R.id.roll_name) as EditText
+        name.setText(mFormula.text.toString(), TextView.BufferType.EDITABLE)
+        name.selectAll()
+        dialog.findViewById(R.id.add_roll_button).setOnClickListener {
+            mDb.addFavoriteRoll(RollModel(mFormula.text.toString(),"","",name.text.toString()))
+            dialog.dismiss()
+        }
     }
 
     fun closeResultView() {
@@ -231,14 +246,11 @@ class HomeFragment : Fragment() {
         refresh_formula()
     }
 
-    fun push_with_auto_symbols(value: String) {
-        if (data_stack.size > 0) {
-            val last = data_stack.peek()
-
-            if (last.contains('d') && value != "+" && value != "-")
+    fun push_with_auto_symbols(value: String?) {
+        if (value == null) return
+        if (data_stack.size > 0)
+            if (data_stack.peek().contains('d') && value != "+" && value != "-")
                 data_stack.push("+")
-        }
-
         data_stack.push(value)
     }
 
@@ -247,7 +259,6 @@ class HomeFragment : Fragment() {
         data_stack.forEach {
             item -> formula += if (item == "+" || item == "-") " $item " else item
         }
-
         mDisplay.text = formula
     }
 }

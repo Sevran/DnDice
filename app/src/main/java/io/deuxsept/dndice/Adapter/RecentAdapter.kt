@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import android.widget.ImageView
 import android.widget.TextView
+import io.deuxsept.dndice.Database.DatabaseHelper
 import io.deuxsept.dndice.MainView.RecentFragment
 import io.deuxsept.dndice.Model.RollModel
 import io.deuxsept.dndice.R
@@ -22,10 +23,11 @@ import java.util.*
  */
 class RecentAdapter : RecyclerView.Adapter<RecentAdapter.ViewHolder> {
 
-    private var mFragment: RecentFragment? = null
+    private lateinit var mFragment: RecentFragment
     private val mList = ArrayList<RollModel>()
     private var lastPosition = -1
-    var mLocale: Locale? = null
+    private lateinit var mLocale: Locale
+    private lateinit var mDb: DatabaseHelper
 
     companion object {
         var mListener: ViewHolder.onItemClick? = null
@@ -33,16 +35,15 @@ class RecentAdapter : RecyclerView.Adapter<RecentAdapter.ViewHolder> {
 
     @Suppress("DEPRECATION")
     constructor(fragment: RecentFragment) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
             mLocale = fragment.context.resources.configuration.locales.get(0)
-        } else {
+        else
             mLocale = fragment.context.resources.configuration.locale
-        }
         mFragment = fragment
+        mDb = DatabaseHelper(fragment.context)
     }
 
     class ViewHolder(itemView: View, listener: ViewHolder.onItemClick) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
-
         var mLayout: View
         internal var mResult: TextView
         internal var mFormula: TextView
@@ -75,7 +76,7 @@ class RecentAdapter : RecyclerView.Adapter<RecentAdapter.ViewHolder> {
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecentAdapter.ViewHolder {
-        val itemView = LayoutInflater.from(mFragment?.context).inflate(R.layout.row_recent, parent, false)
+        val itemView = LayoutInflater.from(mFragment.context).inflate(R.layout.row_recent, parent, false)
         return ViewHolder(itemView, object : ViewHolder.onItemClick {
             override fun onClick(caller: View, position: Int) {
                 val model: RollModel = mList[position]
@@ -83,6 +84,8 @@ class RecentAdapter : RecyclerView.Adapter<RecentAdapter.ViewHolder> {
                 var i: Int = 0
                 for (m in mList) {
                     if (m.formula == mList[position].formula) {
+                        if (fav) mDb.addFavoriteRoll(m)
+                        else mDb.deleteFavoriteRoll(m.id)
                         m.fav = fav
                         notifyItemChanged(i)
                     }
@@ -94,29 +97,23 @@ class RecentAdapter : RecyclerView.Adapter<RecentAdapter.ViewHolder> {
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val model: RollModel = mList[position]
-
         holder.mResult.text = model.result
         holder.mFormula.text = model.formula
         holder.mDetail.text = model.detail
-        // Pourquoi ça marche pas laaaaaaaaaaaaaaaaaaaaaa
-        //holder.mFavButton.setImageResource((model.fav) R.drawable.ic_favorite_24dp else R.drawable.ic_favorite_outlined_24dp)
         if (model.fav)  {
             holder.mFavButton.setImageResource(R.drawable.ic_favorite_24dp)
-            holder.mFavButton.setColorFilter(ContextCompat.getColor(mFragment?.context, R.color.colorAccent), PorterDuff.Mode.SRC_IN)
+            holder.mFavButton.setColorFilter(ContextCompat.getColor(mFragment.context, R.color.colorAccent), PorterDuff.Mode.SRC_IN)
         } else {
             holder.mFavButton.setImageResource(R.drawable.ic_favorite_outlined_24dp)
-            holder.mFavButton.setColorFilter(ContextCompat.getColor(mFragment?.context, R.color.md_grey_500), PorterDuff.Mode.SRC_IN)
+            holder.mFavButton.setColorFilter(ContextCompat.getColor(mFragment.context, R.color.md_grey_500), PorterDuff.Mode.SRC_IN)
         }
-
-        val dateString = SimpleDateFormat("dd MMM - HH:mm", mLocale).format(Date(model.timestamp))
-        holder.mTimestamp.text = dateString
-
+        holder.mTimestamp.text = SimpleDateFormat("dd MMM - HH:mm", mLocale).format(Date(model.timestamp))
         setAnimation(holder.mLayout, position)
     }
 
     private fun setAnimation(viewToAnimate: View, position: Int) {
         if (position > lastPosition) {
-            val animation = AnimationUtils.loadAnimation(mFragment?.context, R.anim.item_slide_in_from_left)
+            val animation = AnimationUtils.loadAnimation(mFragment.context, R.anim.item_slide_in_from_left)
             viewToAnimate.startAnimation(animation)
             lastPosition = position
         }
