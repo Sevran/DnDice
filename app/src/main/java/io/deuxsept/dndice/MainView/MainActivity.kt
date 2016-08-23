@@ -16,8 +16,7 @@ import android.view.View
 import io.deuxsept.dndice.R
 
 /**
- * 2.7.0 Toujours plus haut
- * La république me suce le tuyau
+ * Main activity
  */
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 

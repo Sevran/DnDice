@@ -42,10 +42,10 @@ class HomeFragment : Fragment() {
     lateinit var mReplayFab: FloatingActionButton
     lateinit var mDb: DatabaseHelper
 
-    var width: Int = 0
-    var height: Int = 0
+    var mWidth: Int = 0
+    var mHeight: Int = 0
 
-    var data_stack: Stack<String> = Stack()
+    var mDataStack: Stack<String> = Stack()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,8 +53,8 @@ class HomeFragment : Fragment() {
         val metrics = DisplayMetrics()
         val wm = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
         wm.defaultDisplay.getMetrics(metrics)
-        width = metrics.widthPixels
-        height = metrics.heightPixels
+        mWidth = metrics.widthPixels
+        mHeight = metrics.heightPixels
     }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -64,13 +64,13 @@ class HomeFragment : Fragment() {
         mDisplay = view.findViewById(R.id.display) as TextView
         mBackspace = view.findViewById(R.id.backspace_button)
         mBackspace.setOnClickListener {
-            if (data_stack.size > 0) {
-                data_stack.pop()
+            if (mDataStack.size > 0) {
+                mDataStack.pop()
                 refresh_formula()
             }
         }
         mBackspace.setOnLongClickListener {
-            data_stack.clear()
+            mDataStack.clear()
             refresh_formula()
             true
         }
@@ -93,7 +93,7 @@ class HomeFragment : Fragment() {
         mRollButton = view.findViewById(R.id.display)
         mRollButton = view.findViewById(R.id.roll_button)
         mRollButton.setOnClickListener {
-            if (data_stack.size > 0) {
+            if (mDataStack.size > 0) {
                 executeRoll()
                 openResultView()
             } else {
@@ -143,7 +143,7 @@ class HomeFragment : Fragment() {
     }
 
     fun executeRoll() {
-        val dice: DiceRoll = DiceRoll.from_string(data_stack.joinToString(""))
+        val dice: DiceRoll = DiceRoll.from_string(mDataStack.joinToString(""))
         val result = dice.roll()
         mFormula.text = dice.formula()
         mDetail.text = result.as_readable_string()
@@ -159,7 +159,7 @@ class HomeFragment : Fragment() {
 
     fun openResultView() {
 
-        Utils.circularReveal(mResultView, width/2, height)
+        Utils.circularReveal(mResultView, mWidth /2, mHeight)
         mFavoriteFab.show()
         mCloseResFab.show()
         mReplayFab.show()
@@ -206,7 +206,7 @@ class HomeFragment : Fragment() {
         mReplayFab.hide()
         val fabPos = mResultView.height - Utils.convertDpToPixel(90, context)
         Utils.circularUnreveal(mResultView, mResultView.width/2, fabPos.toInt())
-        data_stack.clear()
+        mDataStack.clear()
         refresh_formula()
         mResultViewOpened = false
     }
@@ -215,7 +215,7 @@ class HomeFragment : Fragment() {
         if (mDisplayWarningShowed) hideDisplayWarning()
         // Check if we're not trying to add too long of a number, without preventing from adding a +/-
         if (view.id != R.id.button_moins && view.id != R.id.button_plus)
-            if (data_stack.size - data_stack.lastIndexOf("+") > 4 && data_stack.size - data_stack.lastIndexOf("-") > 4)
+            if (mDataStack.size - mDataStack.lastIndexOf("+") > 4 && mDataStack.size - mDataStack.lastIndexOf("-") > 4)
                 return
 
         push_with_auto_symbols(when(view.id) {
@@ -248,15 +248,15 @@ class HomeFragment : Fragment() {
 
     fun push_with_auto_symbols(value: String?) {
         if (value == null) return
-        if (data_stack.size > 0)
-            if (data_stack.peek().contains('d') && value != "+" && value != "-")
-                data_stack.push("+")
-        data_stack.push(value)
+        if (mDataStack.size > 0)
+            if (mDataStack.peek().contains('d') && value != "+" && value != "-")
+                mDataStack.push("+")
+        mDataStack.push(value)
     }
 
     fun refresh_formula() {
         var formula = ""
-        data_stack.forEach {
+        mDataStack.forEach {
             item -> formula += if (item == "+" || item == "-") " $item " else item
         }
         mDisplay.text = formula
