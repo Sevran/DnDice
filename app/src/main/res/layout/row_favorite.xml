@@ -10,8 +10,10 @@
         android:textSize="16sp"
         android:textStyle="bold"
         android:textColor="?android:textColorPrimary"
-        android:paddingStart="16dp" android:paddingEnd="16dp"
-        android:text="favorite name"/>
+        android:paddingStart="16dp" android:paddingEnd="40dp"
+        android:text="favorite name"
+        android:lines="1"
+        android:ellipsize="end"/>
     <TextView
         android:id="@+id/recent_formula"
         android:layout_width="match_parent" android:layout_height="match_parent"
@@ -19,8 +21,10 @@
         android:text="formula"
         android:textSize="16sp"
         android:textColor="?android:textColorPrimary"
+        android:maxLines="2"
         android:layout_marginTop="32dp"
-        android:paddingStart="16dp" android:paddingEnd="16dp"/>
+        android:paddingStart="16dp" android:paddingEnd="40dp"
+        android:ellipsize="end"/>
 
     <android.support.v7.widget.AppCompatImageView
         android:id="@+id/fav_reorder_button"
