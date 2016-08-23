@@ -76,7 +76,7 @@ class FavoriteAdapter : RecyclerView.Adapter<FavoriteAdapter.ViewHolder>, ItemTo
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val model: RollModel = mList[position]
         holder.mFormula.text = model.formula
-        holder.mName.text = model.name
+        holder.mName.text = if (model.name.trim() != "") model.name else "Unnamed"
         holder.mReorderButton.setOnTouchListener { v, event ->
             if (MotionEventCompat.getActionMasked(event) === MotionEvent.ACTION_DOWN)
                 mDragStartListener.onDragStarted(holder)

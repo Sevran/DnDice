@@ -9,24 +9,16 @@
     android:visibility="gone">
 
     <TextView
-        android:id="@+id/res_title"
-        android:layout_width="wrap_content" android:layout_height="wrap_content"
-        android:textColor="@color/md_white_1000"
-        android:fontFamily="sans-serif-thin"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="56dp"
-        android:textSize="24sp"
-        android:text="@string/result_title"
-        android:layout_marginBottom="24dp" />
-
-    <TextView
         android:id="@+id/formula_var"
         android:layout_width="wrap_content" android:layout_height="wrap_content"
         android:textColor="@color/md_white_1000"
         android:layout_below="@+id/res_title"
         android:layout_centerHorizontal="true"
         android:fontFamily="sans-serif-thin"
-        android:textSize="24sp"/>
+        android:textSize="24sp"
+        android:layout_marginTop="24dp"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"/>
 
     <TextView
         android:id="@+id/result_var"
