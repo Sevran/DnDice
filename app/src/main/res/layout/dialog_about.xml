@@ -2,5 +2,11 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
-
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:inputType="textMultiLine"
+        android:text="@string/about_text"
+        android:paddingTop="24dp" android:paddingBottom="24dp" android:paddingLeft="8dp" android:paddingRight="8dp"/>
 </LinearLayout>

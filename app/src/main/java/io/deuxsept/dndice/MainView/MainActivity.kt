@@ -86,6 +86,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             R.id.nav_beer -> {
                 payUsABeer()
             }
+            R.id.nav_about -> {
+                about()
+            }
         }
         mDrawer.closeDrawer(GravityCompat.START)
         return true
@@ -120,6 +123,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     fun payUsABeer() {
         val dialog: Dialog = Dialog(this)
         dialog.setContentView(R.layout.dialog_pay_us_beer)
+        dialog.show()
+    }
+
+    fun about() {
+        val dialog = Dialog(this)
+        dialog.setContentView(R.layout.dialog_about)
         dialog.show()
     }
 }
