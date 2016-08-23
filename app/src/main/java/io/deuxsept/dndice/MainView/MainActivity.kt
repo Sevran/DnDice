@@ -1,5 +1,6 @@
 package io.deuxsept.dndice.MainView
 
+import android.app.Activity
 import android.app.Dialog
 import android.content.Intent
 import android.support.v7.app.AppCompatActivity
@@ -14,6 +15,7 @@ import android.support.v7.app.ActionBarDrawerToggle
 import android.view.MenuItem
 import android.view.View
 import io.deuxsept.dndice.R
+import io.deuxsept.dndice.SettingsView.SettingsActivity
 
 /**
  * Main activity
@@ -78,7 +80,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 switchFragment(RecentFragment.newInstance(), R.string.nav_last_rolls, RECENT_FRAGMENT)
             }
             R.id.nav_settings -> {
-
+                val intent = Intent(this, SettingsActivity::class.java)
+                startActivity(intent)
+                overridePendingTransition(R.anim.fade_in, R.anim.fade_out)
             }
             R.id.nav_share -> {
                 shareApp()
