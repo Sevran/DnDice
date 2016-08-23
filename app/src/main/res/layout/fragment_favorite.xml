@@ -14,30 +14,28 @@
     <LinearLayout
         android:id="@+id/favorite_none_view"
         android:layout_width="match_parent" android:layout_height="match_parent"
-        android:background="@color/colorPrimaryDark"
+        android:background="@color/md_white_1000"
         android:orientation="vertical"
         android:gravity="center">
 
         <LinearLayout
             android:layout_width="wrap_content" android:layout_height="wrap_content"
-            android:background="@drawable/circle_white"
-            android:elevation="4dp"
             android:gravity="center">
 
             <android.support.v7.widget.AppCompatImageView
                 android:layout_width="56dp" android:layout_height="56dp"
                 app:srcCompat="@drawable/ic_favorite_outlined_24dp"
-                android:tint="@color/colorPrimaryDark"/>
+                android:tint="@color/md_grey_300"/>
 
         </LinearLayout>
 
         <TextView
             android:layout_width="wrap_content" android:layout_height="wrap_content"
-            android:textColor="@color/md_white_1000"
+            android:textColor="@color/md_grey_500"
             android:textSize="18sp"
             android:fontFamily="sans-serif-light"
             android:layout_marginTop="24dp"
-            android:text="No favorite roll found"/>
+            android:text="You don't have any favourites yet!"/>
 
     </LinearLayout>
 

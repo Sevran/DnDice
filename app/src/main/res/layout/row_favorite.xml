@@ -4,13 +4,22 @@
     android:layout_width="match_parent" android:layout_height="?listPreferredItemHeight">
 
     <TextView
+        android:id="@+id/favorite_name"
+        android:layout_width="match_parent" android:layout_height="match_parent"
+        android:layout_marginTop="10dp"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:textColor="?android:textColorPrimary"
+        android:paddingStart="16dp" android:paddingEnd="16dp"
+        android:text="favorite name"/>
+    <TextView
         android:id="@+id/recent_formula"
         android:layout_width="match_parent" android:layout_height="match_parent"
         android:layout_toStartOf="@+id/fav_reorder_button"
-        android:gravity="center_vertical"
         android:text="formula"
         android:textSize="16sp"
         android:textColor="?android:textColorPrimary"
+        android:layout_marginTop="32dp"
         android:paddingStart="16dp" android:paddingEnd="16dp"/>
 
     <android.support.v7.widget.AppCompatImageView

@@ -54,11 +54,13 @@ class FavoriteAdapter : RecyclerView.Adapter<FavoriteAdapter.ViewHolder>, ItemTo
         var mLayout: View
         internal var mFormula: TextView
         internal var mReorderButton: ImageView
+        internal var mName: TextView
 
         init {
             mLayout = itemView.findViewById(R.id.row_layout)
             mFormula = itemView.findViewById(R.id.recent_formula) as TextView
             mReorderButton = itemView.findViewById(R.id.fav_reorder_button) as ImageView
+            mName = itemView.findViewById(R.id.favorite_name) as TextView
         }
 
         internal fun clearAnimation() {
@@ -74,6 +76,7 @@ class FavoriteAdapter : RecyclerView.Adapter<FavoriteAdapter.ViewHolder>, ItemTo
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val model: RollModel = mList[position]
         holder.mFormula.text = model.formula
+        holder.mName.text = model.name
         holder.mReorderButton.setOnTouchListener { v, event ->
             if (MotionEventCompat.getActionMasked(event) === MotionEvent.ACTION_DOWN)
                 mDragStartListener.onDragStarted(holder)

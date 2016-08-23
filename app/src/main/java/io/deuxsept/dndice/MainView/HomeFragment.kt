@@ -79,13 +79,13 @@ class HomeFragment : Fragment() {
         mFav.setOnClickListener {
             val menu = PopupMenu(context, mFav)
             menu.setOnMenuItemClickListener { item ->
-                data_stack.clear()
+                mDataStack.clear()
                 push_with_auto_symbols(mDb.getFavorite(item.itemId)?.formula)
                 refresh_formula()
                 true
             }
             for ((formula, result, detail, name, id) in mDb.getAllFavoritesRolls()) {
-                menu.menu.add(0, id, Menu.NONE, name)
+                menu.menu.add(0, id, Menu.NONE, "$name ($formula)")
             }
             menu.show()
         }
