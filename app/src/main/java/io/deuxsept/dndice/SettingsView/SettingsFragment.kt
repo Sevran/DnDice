@@ -3,19 +3,10 @@ package io.deuxsept.dndice.SettingsView
 import android.os.Bundle
 import android.preference.PreferenceFragment
 import android.preference.PreferenceManager
-import android.support.v4.app.Fragment
-import android.support.v4.content.ContextCompat
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.helper.ItemTouchHelper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import io.deuxsept.dndice.Adapter.FavoriteAdapter
-import io.deuxsept.dndice.Database.DatabaseHelper
 import io.deuxsept.dndice.R
-import io.deuxsept.dndice.Utils.SimpleItemTouchHelperCallback
-import io.deuxsept.dndice.Utils.Utils
 
 class SettingsFragment : PreferenceFragment() {
 

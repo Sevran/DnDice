@@ -10,7 +10,6 @@ import android.view.ViewGroup
 import io.deuxsept.dndice.Adapter.RecentAdapter
 import io.deuxsept.dndice.Database.DatabaseHelper
 import io.deuxsept.dndice.R
-import io.deuxsept.dndice.Utils.Utils
 
 /**
  * Created by Luo

@@ -3,8 +3,8 @@ package io.deuxsept.dndice.tests.logic
 import io.deuxsept.dndice.Model.Dice
 import io.deuxsept.dndice.Model.DiceRoll
 import io.deuxsept.dndice.Model.FlatBonus
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.Assert
+import org.junit.Test
 
 /**
  * Tests for DiceRoll
@@ -28,7 +28,7 @@ class DiceRollTest {
         Assert.assertTrue("Parsed dice does not have the expected value ($default_dice | $parsed_dice)", default_dice.formula() == parsed_dice.formula())
 
         // "fuck you" tests -- Things that should rarely happen but still do. Let's ensure we handle those correctly
-        var hard_dice = DiceRoll(listOf(Dice(2,10), FlatBonus(3), Dice(5,20), FlatBonus(8), FlatBonus(-5),Dice(-2, 4)))
+        val hard_dice = DiceRoll(listOf(Dice(2,10), FlatBonus(3), Dice(5,20), FlatBonus(8), FlatBonus(-5),Dice(-2, 4)))
         parsed_dice = DiceRoll.from_string("2d10 + 3 + 5d20 + 8 - 5 - 2d4")
         Assert.assertTrue("Parsed dice does not have the expected value ($hard_dice | $parsed_dice).", hard_dice.formula() == parsed_dice.formula())
 

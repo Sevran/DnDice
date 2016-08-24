@@ -2,7 +2,6 @@ package io.deuxsept.dndice.MainView
 
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.support.v4.content.ContextCompat
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.helper.ItemTouchHelper
@@ -13,7 +12,6 @@ import io.deuxsept.dndice.Adapter.FavoriteAdapter
 import io.deuxsept.dndice.Database.DatabaseHelper
 import io.deuxsept.dndice.R
 import io.deuxsept.dndice.Utils.SimpleItemTouchHelperCallback
-import io.deuxsept.dndice.Utils.Utils
 
 /**
  * Created by Luo

@@ -1,7 +1,5 @@
 package io.deuxsept.dndice.Model
 
-import io.deuxsept.dndice.Model.DiceRollResult
-import io.deuxsept.dndice.Model.Dice
 import java.util.*
 
 /**
@@ -18,11 +16,6 @@ class DiceRoll {
     constructor(data: List<IRollable>) {
         elements_in_roll = data.toMutableList()
     }
-
-    /**
-     * You better have a good reason to use this constructor, I swear. Use from_string
-     */
-    constructor() { }
 
     /**
      * Override equality comparison
@@ -55,7 +48,7 @@ class DiceRoll {
      * Returns the formula used for the roll, with dices first then bonuses and appropriate signs.
      */
     fun formula(): String {
-        var prefixed = StringBuilder()
+        val prefixed = StringBuilder()
         elements_in_roll.forEach {
             item -> run {
                 prefixed.append(when(item) {
@@ -97,7 +90,7 @@ class DiceRoll {
             val elements: MutableList<IRollable> = mutableListOf()
             var chars_parsed = 0
             var trigger_parse = false
-            var stripped = value.replace(" ", "")
+            val stripped = value.replace(" ", "")
 
             stripped.forEach {
                 char -> run {

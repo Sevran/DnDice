@@ -6,7 +6,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
-        android:inputType="textMultiLine"
         android:text="@string/about_text"
         android:paddingTop="24dp" android:paddingBottom="24dp" android:paddingLeft="8dp" android:paddingRight="8dp"/>
 </LinearLayout>

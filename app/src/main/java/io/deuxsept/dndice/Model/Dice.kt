@@ -25,7 +25,7 @@ class Dice: IRollable {
     }
 
     override fun toString(): String {
-        return "${dice_rolls}d${dice_type}"
+        return "${dice_rolls}d$dice_type"
     }
 
     override fun equals(other: Any?): Boolean {
@@ -36,9 +36,9 @@ class Dice: IRollable {
     }
 
     override fun roll(): List<Int> {
-        var rng: Random = Random()
+        val rng: Random = Random()
 
-        var rolls_for_item: MutableList<Int> = mutableListOf()
+        val rolls_for_item: MutableList<Int> = mutableListOf()
         for (i in 0..Math.abs(dice_rolls) - 1) {
             rolls_for_item.add((rng.nextInt(dice_type) + 1) * Integer.signum(dice_rolls))
         }

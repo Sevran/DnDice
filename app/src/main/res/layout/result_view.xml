@@ -2,6 +2,7 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/result_view"
     android:layout_width="match_parent" android:layout_height="match_parent"
     android:background="@color/colorPrimary"
@@ -12,7 +13,6 @@
         android:id="@+id/formula_var"
         android:layout_width="wrap_content" android:layout_height="wrap_content"
         android:textColor="@color/md_white_1000"
-        android:layout_below="@+id/res_title"
         android:layout_centerHorizontal="true"
         android:fontFamily="sans-serif-thin"
         android:textSize="24sp"
@@ -52,7 +52,8 @@
         android:layout_marginBottom="64dp"
         app:backgroundTint="@color/md_white_1000"
         app:elevation="6dp"
-        app:fabSize="mini"/>
+        app:fabSize="mini"
+        tools:ignore="RelativeOverlap" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/close_result_fab"
