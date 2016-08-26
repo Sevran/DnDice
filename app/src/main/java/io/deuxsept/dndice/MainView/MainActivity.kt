@@ -82,6 +82,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 val intent = Intent(this, SettingsActivity::class.java)
                 startActivity(intent)
                 overridePendingTransition(R.anim.fade_in, R.anim.fade_out)
+                mNavigationView.menu.getItem(mCurrentfragment).isChecked = true
             }
             R.id.nav_share -> {
                 shareApp()

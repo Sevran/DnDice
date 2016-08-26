@@ -82,10 +82,15 @@ class RecentAdapter : RecyclerView.Adapter<RecentAdapter.ViewHolder> {
                 val model: RollModel = mList[position]
                 val fav: Boolean = !model.fav
                 var i: Int = 0
+                var was_added = false
                 for (m in mList) {
                     if (m.formula == mList[position].formula) {
-                        if (fav) mDb.addFavoriteRoll(m)
-                        else mDb.deleteFavoriteRoll(m.id)
+                        if (!was_added) {
+                            if (fav) mDb.addFavoriteRoll(m)
+                            else mDb.deleteFavoriteRoll(m.id)
+
+                            was_added = true
+                        }
                         m.fav = fav
                         notifyItemChanged(i)
                     }
