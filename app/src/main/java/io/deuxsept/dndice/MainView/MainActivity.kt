@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 
 import android.os.Bundle
+import android.preference.PreferenceFragment
 import android.support.design.widget.NavigationView
 import android.support.v4.app.Fragment
 import android.support.v4.view.GravityCompat
@@ -14,7 +15,7 @@ import android.support.v7.app.ActionBarDrawerToggle
 import android.view.MenuItem
 import android.view.View
 import io.deuxsept.dndice.R
-import io.deuxsept.dndice.SettingsView.SettingsActivity
+import io.deuxsept.dndice.MainView.SettingsFragment
 
 /**
  * Main activity
@@ -24,6 +25,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     var HOME_FRAGMENT: Int = 0
     var FAVORITE_FRAGMENT: Int = 1
     var RECENT_FRAGMENT: Int = 2
+    var SETINGS_FRAGMENT: Int = 3
 
     var mCurrentfragment: Int = 0
     lateinit var mHomeFragment: HomeFragment
@@ -79,10 +81,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 switchFragment(RecentFragment.newInstance(), R.string.nav_last_rolls, RECENT_FRAGMENT)
             }
             R.id.nav_settings -> {
-                val intent = Intent(this, SettingsActivity::class.java)
-                startActivity(intent)
-                overridePendingTransition(R.anim.fade_in, R.anim.fade_out)
-                mNavigationView.menu.getItem(mCurrentfragment).isChecked = true
+                switchFragment(SettingsFragment.newInstance(), R.string.nav_settings, SETINGS_FRAGMENT)
             }
             R.id.nav_share -> {
                 shareApp()

@@ -24,7 +24,6 @@ import java.util.*
  * Created by Luo
  * on 15/08/2016.
  */
-
 class FavoriteAdapter : RecyclerView.Adapter<FavoriteAdapter.ViewHolder>, ItemTouchHelperAdapter {
 
     private lateinit var mFragment: FavoriteFragment

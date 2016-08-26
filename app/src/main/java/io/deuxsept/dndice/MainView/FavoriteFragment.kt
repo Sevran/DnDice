@@ -17,7 +17,6 @@ import io.deuxsept.dndice.Utils.SimpleItemTouchHelperCallback
  * Created by Luo
  * on 15/08/2016.
  */
-
 class FavoriteFragment : Fragment(), FavoriteAdapter.OnDragStartListener {
 
     lateinit var mDb: DatabaseHelper

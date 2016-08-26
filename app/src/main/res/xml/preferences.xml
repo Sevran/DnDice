@@ -1,25 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
     <PreferenceCategory
         android:title="Appearance and Behavior">
+
         <CheckBoxPreference
             android:key="pref_color_theme"
             android:title="Force Dark theme"
             android:summary="Use a different, dark theme. If unticked, will follow the system wide rules."
             android:defaultValue="false" />
+
         <CheckBoxPreference
             android:key="pref_quick_results"
             android:title="Display results faster"
             android:summary="Display roll results in a small window, allowing for faster actions."/>
+
         <CheckBoxPreference
             android:key="pref_quick_favorite_roll"
             android:title="Instantly roll favourites"
             android:summary="Roll the dices immediately when selected from the favorites."/>
+
     </PreferenceCategory>
+
     <PreferenceCategory
         android:title="Data">
+
         <Preference
             android:key="pref_clear_favourites"
             android:title="Erase favourites"/>
+
     </PreferenceCategory>
+
 </PreferenceScreen>
