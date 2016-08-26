@@ -2,6 +2,7 @@ package io.deuxsept.dndice.MainView
 
 import android.app.Dialog
 import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
 import android.support.v4.app.Fragment
@@ -41,6 +42,7 @@ class HomeFragment : Fragment() {
     lateinit var mCloseResFab: FloatingActionButton
     lateinit var mReplayFab: FloatingActionButton
     lateinit var mDb: DatabaseHelper
+    lateinit var mQuickResult: TextView
 
     var mWidth: Int = 0
     var mHeight: Int = 0
@@ -101,6 +103,12 @@ class HomeFragment : Fragment() {
             }
         }
 
+        mQuickResult = activity.findViewById(R.id.toolbar_quickresult) as TextView
+        mQuickResult.text = ""
+        mQuickResult.setOnClickListener {
+            if (mQuickResult.text != "" && !mResultViewOpened) openResultView()
+        }
+
         initResultViewVars(view)
 
         return view
@@ -148,13 +156,16 @@ class HomeFragment : Fragment() {
         mFormula.text = dice.formula()
         mDetail.text = result.as_readable_string()
         mResult.text = result.as_total().toString()
+        mQuickResult.text = result.as_total().toString()
 
-        if (!result.as_readable_string().equals("") && !result.as_total().toString().equals(""))
+        if (!result.as_readable_string().equals("") && !result.as_total().toString().equals("")) {
             mDb.addRecentRoll(RollModel(
                     mFormula.text.toString(),
                     mResult.text.toString(),
                     mDetail.text.toString()
             ))
+        }
+
     }
 
     fun openResultView() {
