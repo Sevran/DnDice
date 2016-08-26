@@ -5,9 +5,9 @@ package io.deuxsept.dndice.Model
  * 10/08/2016.
  */
 class DiceRollResult {
-    val results: List<List<Int>>
+    val results: List<IRollable>
 
-    constructor(data: List<List<Int>>){
+    constructor(data: List<IRollable>){
         results = data
     }
 
@@ -16,12 +16,7 @@ class DiceRollResult {
      */
     fun as_readable_string(): String {
         return results.joinToString {
-            item -> run {
-                when(item.size){
-                    1 -> item[0].toString()
-                    else -> item.toString()
-                }
-            }
+            item -> item.results_as_string()
         }
     }
 
@@ -29,6 +24,6 @@ class DiceRollResult {
      * Returns the total from the rolls
      */
     fun as_total(): Int {
-        return results.sumBy { item -> item.sum() }
+        return this.results.sumBy { item -> item.results.sum() }
     }
 }

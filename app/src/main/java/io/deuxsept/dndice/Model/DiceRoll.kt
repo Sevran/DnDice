@@ -67,10 +67,10 @@ class DiceRoll {
      * Returns a list of random values as well as the flat bonuses
      */
     fun roll(): DiceRollResult {
-        val rolls: MutableList<List<Int>> = mutableListOf()
+        val rolls: MutableList<IRollable> = mutableListOf()
 
         elements_in_roll.forEach {
-            item -> rolls.add(item.roll())
+            item -> run { item.roll(); rolls.add(item) }
         }
 
         return DiceRollResult(rolls)

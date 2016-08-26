@@ -5,4 +5,7 @@ package io.deuxsept.dndice.Model
  */
 interface IRollable {
     fun roll(): List<Int>
+    fun results_as_string(): String
+
+    var results: MutableList<Int>
 }
