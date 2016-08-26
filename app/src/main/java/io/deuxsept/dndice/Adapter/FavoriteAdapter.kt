@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.ImageView
 import android.widget.TextView
@@ -82,12 +83,13 @@ class FavoriteAdapter : RecyclerView.Adapter<FavoriteAdapter.ViewHolder>, ItemTo
                 mDragStartListener.onDragStarted(holder)
             false
         }
-        setAnimation(holder.mLayout, position)
+        
+        val animation = AnimationUtils.loadAnimation(mFragment.context, R.anim.item_slide_in_from_left)
+        setAnimation(holder.mLayout, position, animation)
     }
 
-    private fun setAnimation(viewToAnimate: View, position: Int) {
+    private fun setAnimation(viewToAnimate: View, position: Int, animation: Animation) {
         if (position > lastPosition) {
-            val animation = AnimationUtils.loadAnimation(mFragment.context, R.anim.item_slide_in_from_left)
             viewToAnimate.startAnimation(animation)
             lastPosition = position
         }
