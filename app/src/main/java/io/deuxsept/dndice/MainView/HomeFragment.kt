@@ -49,6 +49,25 @@ class HomeFragment : Fragment() {
 
     var mDataStack: Stack<String> = Stack()
 
+    /*
+     *****************************************************
+     *****************************************************
+     * Android Specific Things
+     *****************************************************
+     *****************************************************
+     */
+    companion object {
+        private var mFragment: HomeFragment? = null
+        var mResultViewOpened: Boolean = false
+
+        fun newInstance(): HomeFragment {
+            if (mFragment == null) {
+                mFragment = HomeFragment()
+            }
+            return mFragment as HomeFragment
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mDb = DatabaseHelper.getInstance(context)!!
@@ -65,20 +84,40 @@ class HomeFragment : Fragment() {
         mDisplayWarning = view.findViewById(R.id.display_empty_warning)
         mDisplay = view.findViewById(R.id.display) as TextView
         mBackspace = view.findViewById(R.id.backspace_button)
+        mFav = view.findViewById(R.id.fav_button)
+        mRollButton = view.findViewById(R.id.roll_button)
+        mQuickResult = activity.findViewById(R.id.toolbar_quickresult) as TextView
+        mQuickResult.text = ""
+
+        initEventHandlers()
+        initResultViewVars(view)
+
+        return view
+    }
+
+    /*
+     * Sets up the various even handlers for the UI
+     */
+    private fun initEventHandlers() {
+        // Delete one element on single backspace tap
         mBackspace.setOnClickListener {
             if (mDataStack.size > 0) {
                 mDataStack.pop()
                 refresh_formula()
             }
         }
+        // Delete entire formula on long backspace press
         mBackspace.setOnLongClickListener {
             mDataStack.clear()
             refresh_formula()
             true
         }
 
-        mFav = view.findViewById(R.id.fav_button)
+        /*
+         * Fill the stack with appropriate data on favorite select
+         */
         mFav.setOnClickListener {
+            // TODO: Cache the favourites data to prevent a DB hit on each tap ?
             val menu = PopupMenu(context, mFav)
             menu.setOnMenuItemClickListener { item ->
                 mDataStack.clear()
@@ -86,17 +125,19 @@ class HomeFragment : Fragment() {
                 // TODO: Use instant roll preferences from SharedPreferences to know if we should roll instantly
                 executeRoll()
                 openResultView()
-                refresh_formula()
                 true
             }
+
             for ((formula, result, detail, name, id) in mDb.getAllFavoritesRolls()) {
                 menu.menu.add(0, id, Menu.NONE, "$name ($formula)")
             }
+
             menu.show()
         }
 
-        mRollButton = view.findViewById(R.id.display)
-        mRollButton = view.findViewById(R.id.roll_button)
+        /*
+         * Roll the dices on tap
+         */
         mRollButton.setOnClickListener {
             if (mDataStack.size > 0) {
                 executeRoll()
@@ -106,17 +147,21 @@ class HomeFragment : Fragment() {
             }
         }
 
-        mQuickResult = activity.findViewById(R.id.toolbar_quickresult) as TextView
-        mQuickResult.text = ""
+        /*
+         * Reopen roll on tap
+         */
         mQuickResult.setOnClickListener {
             if (mQuickResult.text != "" && !mResultViewOpened) openResultView()
         }
-
-        initResultViewVars(view)
-
-        return view
     }
 
+    /*
+     *****************************************************
+     *****************************************************
+     * UI Modifications
+     *****************************************************
+     *****************************************************
+     */
     fun showDisplayWarning() {
         mDisplayWarningShowed = true
         mDisplayWarning.animate()
@@ -141,18 +186,13 @@ class HomeFragment : Fragment() {
                 .setInterpolator(AccelerateInterpolator()).start()
     }
 
-    companion object {
-        private var mFragment: HomeFragment? = null
-        var mResultViewOpened: Boolean = false
-
-        fun newInstance(): HomeFragment {
-            if (mFragment == null) {
-                mFragment = HomeFragment()
-            }
-            return mFragment as HomeFragment
-        }
-    }
-
+    /*
+     *****************************************************
+     *****************************************************
+     * Data Operations
+     *****************************************************
+     *****************************************************
+     */
     fun executeRoll() {
         val dice: DiceRoll = DiceRoll.from_string(mDataStack.joinToString(""))
         val result = dice.roll()
