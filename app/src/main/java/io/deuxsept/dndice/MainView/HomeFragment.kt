@@ -83,6 +83,9 @@ class HomeFragment : Fragment() {
             menu.setOnMenuItemClickListener { item ->
                 mDataStack.clear()
                 push_with_auto_symbols(mDb.getFavorite(item.itemId)?.formula)
+                // TODO: Use instant roll preferences from SharedPreferences to know if we should roll instantly
+                executeRoll()
+                openResultView()
                 refresh_formula()
                 true
             }
