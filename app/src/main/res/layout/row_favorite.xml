@@ -3,36 +3,44 @@
     android:id="@+id/row_layout"
     android:layout_width="match_parent" android:layout_height="?listPreferredItemHeight">
 
-    <TextView
-        android:id="@+id/favorite_name"
+    <RelativeLayout
         android:layout_width="match_parent" android:layout_height="match_parent"
-        android:layout_marginTop="10dp"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        android:textColor="?android:textColorPrimary"
-        android:paddingStart="16dp" android:paddingEnd="40dp"
-        android:text="favorite name"
-        android:lines="1"
-        android:ellipsize="end"/>
-    <TextView
-        android:id="@+id/recent_formula"
-        android:layout_width="match_parent" android:layout_height="match_parent"
-        android:layout_toStartOf="@+id/fav_reorder_button"
-        android:text="formula"
-        android:textSize="16sp"
-        android:textColor="?android:textColorPrimary"
-        android:maxLines="2"
-        android:layout_marginTop="32dp"
-        android:paddingStart="16dp" android:paddingEnd="40dp"
-        android:ellipsize="end"/>
+        android:background="@color/md_white_1000">
 
-    <android.support.v7.widget.AppCompatImageView
-        android:id="@+id/fav_reorder_button"
-        android:layout_width="wrap_content" android:layout_height="match_parent"
-        app:srcCompat="@drawable/ic_reorder_24dp"
-        android:paddingEnd="16dp" android:paddingStart="16dp"
-        android:layout_alignParentEnd="true"
-        android:tint="@color/md_grey_500"/>
+        <TextView
+            android:id="@+id/favorite_name"
+            android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:layout_toStartOf="@+id/fav_reorder_button"
+            android:layout_marginTop="10dp"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="?android:textColorPrimary"
+            android:paddingStart="16dp" android:paddingEnd="40dp"
+            android:text="favorite name"
+            android:lines="1"
+            android:ellipsize="end"/>
+
+        <TextView
+            android:id="@+id/recent_formula"
+            android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:layout_toStartOf="@+id/fav_reorder_button"
+            android:text="formula"
+            android:textSize="16sp"
+            android:textColor="?android:textColorPrimary"
+            android:maxLines="2"
+            android:layout_marginTop="32dp"
+            android:paddingStart="16dp" android:paddingEnd="40dp"
+            android:ellipsize="end"/>
+
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/fav_reorder_button"
+            android:layout_width="wrap_content" android:layout_height="match_parent"
+            app:srcCompat="@drawable/ic_reorder_24dp"
+            android:paddingEnd="16dp" android:paddingStart="16dp"
+            android:layout_alignParentEnd="true"
+            android:tint="@color/md_grey_500"/>
+
+    </RelativeLayout>
 
     <View
         android:layout_width="match_parent" android:layout_height="1dp"

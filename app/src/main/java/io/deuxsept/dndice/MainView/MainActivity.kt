@@ -13,6 +13,7 @@ import android.support.v4.widget.DrawerLayout
 import android.support.v7.app.ActionBarDrawerToggle
 import android.view.MenuItem
 import android.view.View
+import android.widget.TextView
 import io.deuxsept.dndice.R
 
 /**
@@ -30,6 +31,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     lateinit var mToolbar: Toolbar
     lateinit var mDrawer: DrawerLayout
     lateinit var mNavigationView: NavigationView
+    lateinit var mLastRoll: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,6 +39,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         mToolbar = findViewById(R.id.toolbar) as Toolbar
         setSupportActionBar(mToolbar)
+        mLastRoll = findViewById(R.id.last_roll) as TextView
 
         mDrawer = findViewById(R.id.drawer_layout) as DrawerLayout
         val toggle = ActionBarDrawerToggle(
@@ -68,9 +71,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     @SuppressWarnings("StatementWithEmptyBody")
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         val id = item.itemId
+        mLastRoll.visibility = View.GONE
         when (id) {
             R.id.nav_home -> {
                 switchFragment(HomeFragment.newInstance(), R.string.app_name, HOME_FRAGMENT)
+                mLastRoll.visibility = View.VISIBLE
             }
             R.id.nav_favorite -> {
                 switchFragment(FavoriteFragment.newInstance(), R.string.nav_favorites, FAVORITE_FRAGMENT)

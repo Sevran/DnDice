@@ -7,6 +7,7 @@ import android.content.Context
 import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
 import android.support.v4.app.Fragment
+import android.support.v7.preference.PreferenceManager
 import android.support.v7.widget.PopupMenu
 import android.util.DisplayMetrics
 import android.view.*
@@ -31,7 +32,7 @@ class HomeFragment : Fragment() {
     lateinit var mDisplayWarning: View
     var mDisplayWarningShowed: Boolean = false
     lateinit var mRollButton: View
-    lateinit var mLastRoll: View
+    lateinit var mLastRoll: TextView
 
     /**
      * Result Views
@@ -80,7 +81,7 @@ class HomeFragment : Fragment() {
         mBackspace = view.findViewById(R.id.backspace_button)
         mFav = view.findViewById(R.id.fav_button)
         mRollButton = view.findViewById(R.id.roll_button)
-        mLastRoll = view.findViewById(R.id.last_roll_button)
+        mLastRoll = activity.findViewById(R.id.last_roll) as TextView
 
         initEventHandlers()
         initResultViewVars(view)
@@ -112,9 +113,12 @@ class HomeFragment : Fragment() {
             menu.setOnMenuItemClickListener { item ->
                 mDataStack.clear()
                 push_with_auto_symbols(mDb.getFavorite(item.itemId)?.formula)
-                // TODO: Use instant roll preferences from SharedPreferences to know if we should roll instantly
-                executeRoll()
-                openResultView(true)
+                if (PreferenceManager.getDefaultSharedPreferences(context).getBoolean("pref_quick_favorite_roll", false)) {
+                    executeRoll()
+                    openResultView()
+                } else {
+                    refresh_formula()
+                }
                 true
             }
             for ((formula, result, detail, name, id) in mDb.getAllFavoritesRolls()) {
@@ -127,16 +131,10 @@ class HomeFragment : Fragment() {
         mRollButton.setOnClickListener {
             if (mDataStack.size > 0) {
                 executeRoll()
-                openResultView(true)
+                openResultView()
             } else {
                 showDisplayWarning()
             }
-        }
-
-        // Reopen roll on tap
-        mLastRoll.setOnClickListener {
-            push_with_auto_symbols(mFormula.text.toString())
-            openResultView(false)
         }
     }
 
@@ -167,11 +165,8 @@ class HomeFragment : Fragment() {
                 .setInterpolator(AccelerateInterpolator()).start()
     }
 
-    fun openResultView(center: Boolean) {
-        if (center)
-            Utils.circularReveal(mResultView, mWidth /2, mHeight)
-        else
-            Utils.circularReveal(mResultView, mWidth, mHeight)
+    fun openResultView() {
+        Utils.circularReveal(mResultView, mWidth /2, mHeight)
         mFavoriteFab.show()
         mCloseResFab.show()
         mReplayFab.show()
@@ -208,7 +203,7 @@ class HomeFragment : Fragment() {
         mFormula.text = dice.formula()
         mDetail.text = result.as_readable_string()
         mResult.text = result.as_total().toString()
-        mLastRoll.visibility = View.VISIBLE
+        mLastRoll.text = mResult.text.toString()
 
         if (!result.as_readable_string().equals("") && !result.as_total().toString().equals("")) {
             mDb.addRecentRoll(RollModel(

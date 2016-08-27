@@ -42,7 +42,7 @@
 
     <LinearLayout
         android:layout_width="match_parent" android:layout_height="match_parent"
-        android:layout_below="@+id/display" android:layout_above="@+id/roll_container"
+        android:layout_below="@+id/display" android:layout_above="@+id/roll_button"
         android:orientation="horizontal">
 
         <LinearLayout
@@ -311,34 +311,15 @@
 
     </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/roll_container"
+    <TextView
+        android:id="@+id/roll_button"
         android:layout_width="match_parent" android:layout_height="56dp"
-        android:orientation="horizontal"
+        style="?borderlessButtonStyle"
+        android:background="@color/colorAccent"
+        android:foreground="?selectableItemBackgroundBorderless"
+        android:textColor="@color/md_white_1000"
         android:layout_alignParentBottom="true"
-        android:animateLayoutChanges="true">
-
-        <TextView
-            android:id="@+id/roll_button"
-            android:layout_width="0dp" android:layout_height="match_parent"
-            android:layout_weight="1"
-            style="?borderlessButtonStyle"
-            android:background="@color/colorAccent"
-            android:foreground="?selectableItemBackgroundBorderless"
-            android:textColor="@color/md_white_1000"
-            android:text="@string/roll_button" />
-
-        <TextView
-            android:id="@+id/last_roll_button"
-            android:layout_width="142dp" android:layout_height="match_parent"
-            style="?borderlessButtonStyle"
-            android:background="@color/colorPrimary"
-            android:foreground="?selectableItemBackgroundBorderless"
-            android:textColor="@color/md_white_1000"
-            android:text="@string/last_roll_button"
-            android:visibility="gone"/>
-
-    </LinearLayout>
+        android:text="@string/roll_button" />
 
     <RelativeLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
