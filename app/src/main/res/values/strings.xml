@@ -18,6 +18,7 @@
 
     <!-- Home Fragment -->
     <string name="roll_button">Roll</string>
+    <string name="last_roll_button">Last\nRoll</string>
     <string name="result_title">The roll is</string>
     <!-- Home Fragment -->
 

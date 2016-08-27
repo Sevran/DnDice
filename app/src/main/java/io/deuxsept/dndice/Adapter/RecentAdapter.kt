@@ -88,7 +88,6 @@ class RecentAdapter : RecyclerView.Adapter<RecentAdapter.ViewHolder> {
                         if (!was_added) {
                             if (fav) mDb.addFavoriteRoll(m)
                             else mDb.deleteFavoriteRoll(m.id)
-
                             was_added = true
                         }
                         m.fav = fav

@@ -1,5 +1,7 @@
 package io.deuxsept.dndice.MainView
 
+import android.animation.Animator
+import android.animation.ObjectAnimator
 import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
@@ -29,6 +31,7 @@ class HomeFragment : Fragment() {
     lateinit var mDisplayWarning: View
     var mDisplayWarningShowed: Boolean = false
     lateinit var mRollButton: View
+    lateinit var mLastRoll: View
 
     /**
      * Result Views
@@ -41,20 +44,12 @@ class HomeFragment : Fragment() {
     lateinit var mCloseResFab: FloatingActionButton
     lateinit var mReplayFab: FloatingActionButton
     lateinit var mDb: DatabaseHelper
-    lateinit var mQuickResult: TextView
 
     var mWidth: Int = 0
     var mHeight: Int = 0
 
     var mDataStack: Stack<String> = Stack()
 
-    /*
-     *****************************************************
-     *****************************************************
-     * Android Specific Things
-     *****************************************************
-     *****************************************************
-     */
     companion object {
         private var mFragment: HomeFragment? = null
         var mResultViewOpened: Boolean = false
@@ -85,8 +80,7 @@ class HomeFragment : Fragment() {
         mBackspace = view.findViewById(R.id.backspace_button)
         mFav = view.findViewById(R.id.fav_button)
         mRollButton = view.findViewById(R.id.roll_button)
-        mQuickResult = activity.findViewById(R.id.toolbar_quickresult) as TextView
-        mQuickResult.text = ""
+        mLastRoll = view.findViewById(R.id.last_roll_button)
 
         initEventHandlers()
         initResultViewVars(view)
@@ -112,54 +106,42 @@ class HomeFragment : Fragment() {
             true
         }
 
-        /*
-         * Fill the stack with appropriate data on favorite select
-         */
+        // Fill the stack with appropriate data on favorite select
         mFav.setOnClickListener {
-            // TODO: Cache the favourites data to prevent a DB hit on each tap ?
             val menu = PopupMenu(context, mFav)
             menu.setOnMenuItemClickListener { item ->
                 mDataStack.clear()
                 push_with_auto_symbols(mDb.getFavorite(item.itemId)?.formula)
                 // TODO: Use instant roll preferences from SharedPreferences to know if we should roll instantly
                 executeRoll()
-                openResultView()
+                openResultView(true)
                 true
             }
-
             for ((formula, result, detail, name, id) in mDb.getAllFavoritesRolls()) {
                 menu.menu.add(0, id, Menu.NONE, "$name ($formula)")
             }
-
             menu.show()
         }
 
-        /*
-         * Roll the dices on tap
-         */
+        // Roll the dices on tap
         mRollButton.setOnClickListener {
             if (mDataStack.size > 0) {
                 executeRoll()
-                openResultView()
+                openResultView(true)
             } else {
                 showDisplayWarning()
             }
         }
 
-        /*
-         * Reopen roll on tap
-         */
-        mQuickResult.setOnClickListener {
-            if (mQuickResult.text != "" && !mResultViewOpened) openResultView()
+        // Reopen roll on tap
+        mLastRoll.setOnClickListener {
+            push_with_auto_symbols(mFormula.text.toString())
+            openResultView(false)
         }
     }
 
-    /*
-     *****************************************************
-     *****************************************************
+    /**
      * UI Modifications
-     *****************************************************
-     *****************************************************
      */
     fun showDisplayWarning() {
         mDisplayWarningShowed = true
@@ -185,12 +167,40 @@ class HomeFragment : Fragment() {
                 .setInterpolator(AccelerateInterpolator()).start()
     }
 
-    /*
-     *****************************************************
-     *****************************************************
+    fun openResultView(center: Boolean) {
+        if (center)
+            Utils.circularReveal(mResultView, mWidth /2, mHeight)
+        else
+            Utils.circularReveal(mResultView, mWidth, mHeight)
+        mFavoriteFab.show()
+        mCloseResFab.show()
+        mReplayFab.show()
+        mResultViewOpened = true
+    }
+
+    fun closeResultView() {
+        raise()
+        mDataStack.clear()
+        refresh_formula()
+        mResultViewOpened = false
+    }
+
+    fun raise() {
+        val objectAnimator = ObjectAnimator.ofInt(mResultView, "bottom", mResultView.bottom, mResultView.top)
+        objectAnimator.interpolator = AccelerateDecelerateInterpolator()
+        objectAnimator.addListener(object : Animator.AnimatorListener {
+            override fun onAnimationRepeat(p0: Animator?) { }
+            override fun onAnimationCancel(p0: Animator?) { }
+            override fun onAnimationStart(animation: Animator) { }
+            override fun onAnimationEnd(animation: Animator) {
+                mResultView.visibility = View.GONE
+            }
+        })
+        objectAnimator.start()
+    }
+
+    /**
      * Data Operations
-     *****************************************************
-     *****************************************************
      */
     fun executeRoll() {
         val dice: DiceRoll = DiceRoll.from_string(mDataStack.joinToString(""))
@@ -198,7 +208,7 @@ class HomeFragment : Fragment() {
         mFormula.text = dice.formula()
         mDetail.text = result.as_readable_string()
         mResult.text = result.as_total().toString()
-        mQuickResult.text = result.as_total().toString()
+        mLastRoll.visibility = View.VISIBLE
 
         if (!result.as_readable_string().equals("") && !result.as_total().toString().equals("")) {
             mDb.addRecentRoll(RollModel(
@@ -208,15 +218,6 @@ class HomeFragment : Fragment() {
             ))
         }
 
-    }
-
-    fun openResultView() {
-
-        Utils.circularReveal(mResultView, mWidth /2, mHeight)
-        mFavoriteFab.show()
-        mCloseResFab.show()
-        mReplayFab.show()
-        mResultViewOpened = true
     }
 
     fun initResultViewVars(view: View) {
@@ -251,17 +252,6 @@ class HomeFragment : Fragment() {
             mDb.addFavoriteRoll(RollModel(mFormula.text.toString(),"","",name.text.toString()))
             dialog.dismiss()
         }
-    }
-
-    fun closeResultView() {
-        mFavoriteFab.hide()
-        mCloseResFab.hide()
-        mReplayFab.hide()
-        val fabPos = mResultView.height - Utils.convertDpToPixel(90, context)
-        Utils.circularUnreveal(mResultView, mResultView.width/2, fabPos.toInt())
-        mDataStack.clear()
-        refresh_formula()
-        mResultViewOpened = false
     }
 
     fun push_element_to_stack(view: View) {
