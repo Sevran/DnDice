@@ -4,6 +4,20 @@
     android:layout_width="match_parent" android:layout_height="?listPreferredItemHeight">
 
     <RelativeLayout
+        android:id="@+id/background"
+        android:layout_width="match_parent" android:layout_height="match_parent"
+        android:background="@color/md_red_500">
+
+        <android.support.v7.widget.AppCompatImageView
+            android:layout_width="wrap_content" android:layout_height="match_parent"
+            app:srcCompat="@drawable/ic_delete_24dp"
+            android:paddingEnd="16dp" android:paddingStart="16dp"
+            android:tint="@color/md_white_1000"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/foreground"
         android:layout_width="match_parent" android:layout_height="match_parent"
         android:background="@color/md_white_1000">
 
@@ -16,7 +30,6 @@
             android:textStyle="bold"
             android:textColor="?android:textColorPrimary"
             android:paddingStart="16dp" android:paddingEnd="40dp"
-            android:text="favorite name"
             android:lines="1"
             android:ellipsize="end"/>
 
@@ -24,7 +37,6 @@
             android:id="@+id/recent_formula"
             android:layout_width="match_parent" android:layout_height="wrap_content"
             android:layout_toStartOf="@+id/fav_reorder_button"
-            android:text="formula"
             android:textSize="16sp"
             android:textColor="?android:textColorPrimary"
             android:maxLines="2"

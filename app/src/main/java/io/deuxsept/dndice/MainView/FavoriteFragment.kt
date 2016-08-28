@@ -1,7 +1,9 @@
 package io.deuxsept.dndice.MainView
 
 import android.os.Bundle
+import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
+import android.support.v4.content.ContextCompat
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.helper.ItemTouchHelper
@@ -10,8 +12,10 @@ import android.view.View
 import android.view.ViewGroup
 import io.deuxsept.dndice.Adapter.FavoriteAdapter
 import io.deuxsept.dndice.Database.DatabaseHelper
+import io.deuxsept.dndice.Model.RollModel
 import io.deuxsept.dndice.R
 import io.deuxsept.dndice.Utils.SimpleItemTouchHelperCallback
+import io.deuxsept.dndice.Utils.SwipeableRecyclerViewTouchListener
 
 /**
  * Created by Luo
@@ -50,12 +54,38 @@ class FavoriteFragment : Fragment(), FavoriteAdapter.OnDragStartListener {
         val layoutManager = LinearLayoutManager(context)
         layoutManager.orientation = LinearLayoutManager.VERTICAL
         mRecyclerView.layoutManager = layoutManager
-        mAdapter = FavoriteAdapter(this, view, this)
+        mAdapter = FavoriteAdapter(this, this)
         mRecyclerView.adapter = mAdapter
 
         val callback: ItemTouchHelper.Callback = SimpleItemTouchHelperCallback(mAdapter)
         mItemTouchHelper = ItemTouchHelper(callback)
         mItemTouchHelper.attachToRecyclerView(mRecyclerView)
+
+
+        val swipeTouchListener = SwipeableRecyclerViewTouchListener(mRecyclerView, R.id.foreground, R.id.background,
+                object : SwipeableRecyclerViewTouchListener.SwipeListener {
+                    override fun onDismissedBySwipe(recyclerView: RecyclerView, reverseSortedPositions: IntArray) {
+                        for (position in reverseSortedPositions) {
+                            val model: RollModel = mAdapter.getItem(position)
+                            mDb.deleteFavoriteRoll(model.id)
+                            mAdapter.removeItem(position)
+                            shouldShowEmptyState()
+                            val snackbar = Snackbar.make(view, "Favorite deleted.", Snackbar.LENGTH_LONG).setAction("UNDO") {
+                                mDb.addFavoriteRoll(model)
+                                mAdapter.addItem(position, model)
+                                shouldShowEmptyState()
+                            }
+                            snackbar.setActionTextColor(ContextCompat.getColor(context, R.color.colorAccent))
+                            snackbar.show()
+                        }
+                        mAdapter.notifyDataSetChanged()
+                    }
+
+                    override fun canSwipe(position: Int): Boolean {
+                        return true
+                    }
+                })
+        mRecyclerView.addOnItemTouchListener(swipeTouchListener);
 
         getRollsFromDatabase()
         return view

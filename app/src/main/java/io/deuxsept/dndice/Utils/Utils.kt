@@ -1,10 +1,6 @@
 package io.deuxsept.dndice.Utils
 
-import android.animation.Animator
-import android.animation.AnimatorListenerAdapter
 import android.content.Context
-import android.graphics.Rect
-import android.support.v7.widget.RecyclerView
 import android.util.DisplayMetrics
 import android.util.Log
 import android.view.View
@@ -41,36 +37,11 @@ class Utils() {
             }
         }
 
-        fun circularUnreveal(view: View, width: Int, height: Int) {
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-                val initialRadius = Math.hypot(width.toDouble(), height.toDouble()).toFloat()
-                val anim = ViewAnimationUtils.createCircularReveal(view, width, height, initialRadius, 0.toFloat())
-                anim.addListener(object : AnimatorListenerAdapter() {
-                    override fun onAnimationEnd(animation: Animator) {
-                        super.onAnimationEnd(animation)
-                        view.visibility = View.GONE
-                    }
-                })
-                anim.start()
-            } else {
-                view.visibility = View.GONE
-            }
-        }
-
         fun convertDpToPixel(dp: Int, context: Context): Int {
             val resources = context.resources
             val metrics = resources.displayMetrics
             val px = dp * (metrics.densityDpi / DisplayMetrics.DENSITY_DEFAULT)
             return px
-        }
-    }
-
-    class SpacesItemDecoration(private val space: Int) : RecyclerView.ItemDecoration() {
-        override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
-            outRect.left = space
-            outRect.right = space
-            outRect.bottom = space
-            if (parent.getChildAdapterPosition(view) === 0) outRect.top = space
         }
     }
 }

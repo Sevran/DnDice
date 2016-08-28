@@ -1,8 +1,6 @@
 package io.deuxsept.dndice.Adapter
 
 import android.os.Build
-import android.support.design.widget.Snackbar
-import android.support.v4.content.ContextCompat
 import android.support.v4.view.MotionEventCompat
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -27,7 +25,6 @@ import java.util.*
 class FavoriteAdapter : RecyclerView.Adapter<FavoriteAdapter.ViewHolder>, ItemTouchHelperAdapter {
 
     private lateinit var mFragment: FavoriteFragment
-    private lateinit var mView: View
     private val mList = ArrayList<RollModel>()
     private var lastPosition = -1
     private lateinit var mDragStartListener: OnDragStartListener
@@ -35,13 +32,12 @@ class FavoriteAdapter : RecyclerView.Adapter<FavoriteAdapter.ViewHolder>, ItemTo
     private lateinit var mDb: DatabaseHelper
 
     @Suppress("DEPRECATION")
-    constructor(fragment: FavoriteFragment, view: View, dragStartListener: OnDragStartListener) {
+    constructor(fragment: FavoriteFragment, dragStartListener: OnDragStartListener) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
             mLocale = fragment.context.resources.configuration.locales.get(0)
         else
             mLocale = fragment.context.resources.configuration.locale
         mFragment = fragment
-        mView = view
         mDragStartListener = dragStartListener
         mDb = DatabaseHelper(fragment.context)
     }
@@ -52,12 +48,16 @@ class FavoriteAdapter : RecyclerView.Adapter<FavoriteAdapter.ViewHolder>, ItemTo
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var mLayout: View
+        var mBackground: View
+        var mForeground: View
         internal var mFormula: TextView
         internal var mReorderButton: ImageView
         internal var mName: TextView
 
         init {
             mLayout = itemView.findViewById(R.id.row_layout)
+            mBackground = itemView.findViewById(R.id.background)
+            mForeground = itemView.findViewById(R.id.foreground)
             mFormula = itemView.findViewById(R.id.recent_formula) as TextView
             mReorderButton = itemView.findViewById(R.id.fav_reorder_button) as ImageView
             mName = itemView.findViewById(R.id.favorite_name) as TextView
@@ -98,22 +98,6 @@ class FavoriteAdapter : RecyclerView.Adapter<FavoriteAdapter.ViewHolder>, ItemTo
         holder.clearAnimation()
     }
 
-    override fun onItemDismiss(position: Int) {
-        val model: RollModel = mList[position]
-        mDb.deleteFavoriteRoll(model.id)
-        mList.removeAt(position)
-        notifyItemRemoved(position)
-        mFragment.shouldShowEmptyState()
-        val snackbar = Snackbar.make(mView, "Favorite deleted.", Snackbar.LENGTH_LONG).setAction("UNDO") {
-            mDb.addFavoriteRoll(model)
-            mList.add(model)
-            notifyItemInserted(mList.size)
-            mFragment.shouldShowEmptyState()
-        }
-        snackbar.setActionTextColor(ContextCompat.getColor(mFragment.context, R.color.colorAccent))
-        snackbar.show()
-    }
-
     override fun onItemMove(fromPosition: Int, toPosition: Int) {
         val prev = mList.removeAt(fromPosition)
         mList.add(if (toPosition > fromPosition) toPosition - 1 else toPosition, prev)
@@ -127,5 +111,19 @@ class FavoriteAdapter : RecyclerView.Adapter<FavoriteAdapter.ViewHolder>, ItemTo
 
     override fun getItemCount(): Int {
         return mList.count()
+    }
+
+    fun getItem(position: Int) : RollModel {
+        return mList[position]
+    }
+
+    fun removeItem(position: Int) {
+        mList.removeAt(position)
+        notifyItemRemoved(position)
+    }
+
+    fun addItem(pos: Int, model: RollModel) {
+        mList.add(pos, model)
+        notifyItemInserted(pos)
     }
 }
