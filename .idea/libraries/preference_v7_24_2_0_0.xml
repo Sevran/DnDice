@@ -1,0 +1,15 @@
+<component name="libraryTable">
+  <library name="preference-v7-24.2.0.0">
+    <ANNOTATIONS>
+      <root url="jar://$PROJECT_DIR$/app/build/intermediates/exploded-aar/com.takisoft.fix/preference-v7/24.2.0.0/annotations.zip!/" />
+    </ANNOTATIONS>
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/app/build/intermediates/exploded-aar/com.takisoft.fix/preference-v7/24.2.0.0/jars/classes.jar!/" />
+      <root url="file://$PROJECT_DIR$/app/build/intermediates/exploded-aar/com.takisoft.fix/preference-v7/24.2.0.0/res" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.takisoft.fix/preference-v7/24.2.0.0/66a9ff07e7f1464857dd8855e7a522bf747012b9/preference-v7-24.2.0.0-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
