@@ -15,6 +15,11 @@
             android:title="Instantly roll favourites"
             android:summary="Roll the dices immediately when selected from the favorites."/>
 
+        <CheckBoxPreference
+            android:key="pref_no_roll_window"
+            android:title="Do not display roll window"
+            android:summary="The roll total will only be updated in the toolbar"/>
+
     </PreferenceCategory>
 
     <PreferenceCategory

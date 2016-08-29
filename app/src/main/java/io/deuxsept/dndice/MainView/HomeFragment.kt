@@ -4,12 +4,14 @@ import android.animation.Animator
 import android.animation.ObjectAnimator
 import android.app.Dialog
 import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
 import android.support.v4.app.Fragment
 import android.support.v7.preference.PreferenceManager
 import android.support.v7.widget.PopupMenu
 import android.util.DisplayMetrics
+import android.util.Log
 import android.view.*
 import android.view.animation.*
 import android.widget.EditText
@@ -166,6 +168,11 @@ class HomeFragment : Fragment() {
     }
 
     fun openResultView() {
+        if (PreferenceManager.getDefaultSharedPreferences(context).getBoolean("pref_no_roll_window", false)) {
+            Log.d("HomeFragment", "Not opening window")
+            return
+        }
+
         Utils.circularReveal(mResultView, mWidth /2, mHeight)
         mFavoriteFab.show()
         mCloseResFab.show()
