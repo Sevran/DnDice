@@ -98,6 +98,8 @@
     <color name="md_blue_A200">#448AFF</color>
     <color name="md_blue_A400">#2979FF</color>
     <color name="md_blue_A700">#2962FF</color>
+    <color name="md_blue_A400_dark">#173F85</color>
+    <color name="md_blue_A700_dark">#183586</color>
 
     <!-- light blue-->
     <color name="md_light_blue_50">#E1F5FE</color>

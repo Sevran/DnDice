@@ -19,7 +19,7 @@
     <RelativeLayout
         android:id="@+id/foreground"
         android:layout_width="match_parent" android:layout_height="match_parent"
-        android:background="@color/md_white_1000">
+        android:background="@color/colorWhite">
 
         <TextView
             android:id="@+id/favorite_name"

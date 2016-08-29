@@ -7,7 +7,7 @@
         android:id="@+id/display"
         android:layout_width="match_parent" android:layout_height="72dp"
         style="?borderlessButtonStyle"
-        android:background="@color/md_white_1000"
+        android:background="@color/colorWhite"
         android:foreground="?selectableItemBackground" />
 
     <android.support.v7.widget.AppCompatImageView
