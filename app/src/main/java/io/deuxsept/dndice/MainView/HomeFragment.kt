@@ -75,6 +75,11 @@ class HomeFragment : Fragment() {
         mHeight = metrics.heightPixels
     }
 
+    override fun onResume() {
+        super.onResume()
+        refresh_formula()
+    }
+
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view: View = inflater!!.inflate(R.layout.fragment_home, container, false)
 
