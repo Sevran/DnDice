@@ -114,6 +114,12 @@ class HomeFragment : Fragment() {
             true
         }
 
+        mLastRoll.setOnClickListener {
+            if (mLastRoll.text != "") {
+                openResultView()
+            }
+        }
+
         // Fill the stack with appropriate data on favorite select
         mFav.setOnClickListener {
             val menu = PopupMenu(context, mFav)
@@ -138,7 +144,9 @@ class HomeFragment : Fragment() {
         mRollButton.setOnClickListener {
             if (mDataStack.size > 0) {
                 executeRoll()
-                openResultView()
+                if (!PreferenceManager.getDefaultSharedPreferences(context).getBoolean("pref_no_roll_window", false)) {
+                    openResultView()
+                }
             } else {
                 showDisplayWarning()
             }
@@ -173,11 +181,6 @@ class HomeFragment : Fragment() {
     }
 
     fun openResultView() {
-        if (PreferenceManager.getDefaultSharedPreferences(context).getBoolean("pref_no_roll_window", false)) {
-            Log.d("HomeFragment", "Not opening window")
-            return
-        }
-
         Utils.circularReveal(mResultView, mWidth /2, mHeight)
         mFavoriteFab.show()
         mCloseResFab.show()

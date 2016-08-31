@@ -4,11 +4,17 @@ package io.deuxsept.dndice.Model
  * Created by Flo
  * 10/08/2016.
  */
-class DiceRollResult {
+public class DiceRollResult {
     val results: List<IRollable>
+    val formula: String
 
-    constructor(data: List<IRollable>){
+    constructor(data: List<IRollable>, formula: String){
         results = data
+        this.formula = formula
+    }
+
+    fun formula(): String {
+        return formula
     }
 
     /**
@@ -25,5 +31,18 @@ class DiceRollResult {
      */
     fun as_total(): Int {
         return this.results.sumBy { item -> item.results.sum() }
+    }
+
+    fun as_total_string(): String {
+        var total = as_total()
+        return if (total == 0) "" else total.toString()
+    }
+
+    fun has_fumble(): Boolean {
+        return results.filter { item -> item.results.contains(1) }.isNotEmpty()
+    }
+
+    fun has_critical(): Boolean {
+        return results.filter {item -> item is Dice && item.results.contains(item.dice_type)}.isNotEmpty()
     }
 }

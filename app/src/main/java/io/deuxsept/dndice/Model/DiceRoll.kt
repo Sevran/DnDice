@@ -73,7 +73,7 @@ class DiceRoll {
             item -> run { item.roll(); rolls.add(item) }
         }
 
-        return DiceRollResult(rolls)
+        return DiceRollResult(rolls, formula())
     }
 
     /**
