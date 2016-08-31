@@ -15,10 +15,6 @@ android {
         }
     }
 
-    dataBinding {
-        enabled = true
-    }
-
     /*signingConfigs {
         release {
             keyAlias ''
