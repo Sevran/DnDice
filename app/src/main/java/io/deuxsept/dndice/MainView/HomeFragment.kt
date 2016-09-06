@@ -115,7 +115,7 @@ class HomeFragment : Fragment() {
         }
 
         mLastRoll.setOnClickListener {
-            if (mLastRoll.text != "") {
+            if (mLastRoll.text != "" && !mResultViewOpened) {
                 openResultView()
             }
         }
