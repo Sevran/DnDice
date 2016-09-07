@@ -71,7 +71,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             mDrawer.closeDrawer(GravityCompat.START)
         } else if (mCurrentFragmentPos != HOME_FRAGMENT) {
             switchFragment(HomeFragment.newInstance(), R.string.app_name, HOME_FRAGMENT)
-        } else if (HomeFragment.mResultViewOpened) {
+        } else if (mHomeFragment.mState.mResultViewOpened) {
             mHomeFragment.closeResultView()
         } else {
             super.onBackPressed()

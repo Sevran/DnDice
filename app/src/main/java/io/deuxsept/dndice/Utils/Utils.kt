@@ -1,5 +1,7 @@
 package io.deuxsept.dndice.Utils
 
+import android.app.Activity
+import android.support.v4.app.Fragment
 import android.content.Context
 import android.util.DisplayMetrics
 import android.util.Log
@@ -45,3 +47,6 @@ class Utils() {
         }
     }
 }
+
+inline fun <reified T : View> Activity.find(id: Int): T = findViewById(id) as T
+inline fun <T : View> Fragment.find(id: Int): T = this.getView()?.findViewById(id) as T
