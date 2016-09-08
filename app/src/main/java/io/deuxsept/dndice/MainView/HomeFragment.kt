@@ -298,11 +298,7 @@ class HomeFragment : android.support.v4.app.Fragment() {
         mDataStack.forEach {
             item -> formula += if (item == "+" || item == "-") " $item " else item
         }
-
-        // For some reason that I don't even want to understand
-        // mDisplay is only updated visually with this here. Remove it and it doesn't update
-        // I don't even
-        Log.wtf("...", "...")
+        
         mDisplay.text = formula
     }
 }
