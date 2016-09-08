@@ -1,11 +1,11 @@
 package io.deuxsept.dndice.MainView
 
 import android.app.Dialog
+import android.os.Bundle
 import android.content.Intent
+import android.graphics.Typeface
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
-
-import android.os.Bundle
 import android.support.design.widget.NavigationView
 import android.support.v4.app.Fragment
 import android.support.v4.view.GravityCompat
@@ -58,12 +58,26 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         mNavigationView = findViewById(R.id.nav_view) as NavigationView
         mNavigationView.setNavigationItemSelectedListener(this)
 
-        if (savedInstanceState == null) {
-            val ft = supportFragmentManager.beginTransaction()
-            mHomeFragment = HomeFragment.newInstance()
-            ft.add(R.id.fragment_container, mHomeFragment)
-            ft.commitAllowingStateLoss()
+        var fragId: Int;
+        fragId = when (savedInstanceState) {
+            null -> HOME_FRAGMENT
+            else -> savedInstanceState.getInt("current_fragment")
         }
+        fragId = when (intent.extras) {
+            null -> fragId
+            else -> intent.extras.getInt("current_fragment")
+        }
+
+        switchFragment(HomeFragment.newInstance(), R.string.app_name, HOME_FRAGMENT)
+        Log.wtf("ARGH", "Entering MainActivity.onCreate")
+    }
+
+    override fun onSaveInstanceState(outState: Bundle?) {
+        super.onSaveInstanceState(outState)
+        if (outState == null) { return }
+
+        // Save the current fragment to reload it after
+        outState.putInt("current_fragment", mCurrentFragmentPos)
     }
 
     override fun onBackPressed() {

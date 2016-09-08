@@ -1,5 +1,7 @@
 package io.deuxsept.dndice.MainView
 
+import android.app.Activity
+import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import com.takisoft.fix.support.v7.preference.PreferenceFragmentCompatDividers
@@ -36,8 +38,9 @@ class SettingsFragment : PreferenceFragmentCompatDividers(), SharedPreferences.O
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String) {
         if (key.equals("pref_color_theme")) {
-            //todo c'est pas opti vu que le fragment bug mais il est 00:33 quoi :/
-            activity.recreate()
+            var intent = activity.intent;
+            activity.finish()
+            activity.startActivity(intent)
         }
     }
 }
