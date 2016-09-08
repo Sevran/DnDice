@@ -19,38 +19,37 @@ import io.deuxsept.dndice.Model.RollModel
 import io.deuxsept.dndice.R
 import io.deuxsept.dndice.Utils.Utils
 import io.deuxsept.dndice.Utils.find
+import io.deuxsept.dndice.Utils.resettableLazy
+import io.deuxsept.dndice.Utils.resettableManager
 import java.util.*
 
 class HomeFragment : android.support.v4.app.Fragment() {
     /**
      * Home Views
      */
-        val mDisplay: TextView by lazy    { find<TextView>(R.id.display)}
-        val mBackspace: View by lazy      { find<View>(R.id.backspace_button) }
-        val mFav: View by lazy            { find<View>(R.id.fav_button) }
-        val mDisplayWarning: View by lazy { find<View>(R.id.display_empty_warning) }
-        val mRollButton: View by lazy     { find<View>(R.id.roll_button) }
-        val mLastRoll: TextView by lazy   { activity.find<TextView>(R.id.last_roll)}
-        val mResultView: View by lazy     { find<View>(R.id.result_view) }
-        val mFormula: TextView by lazy    { find<TextView>(R.id.formula_var) }
-        val mResult: TextView by lazy     { find<TextView>(R.id.result_var) }
-        val mDetail: TextView by lazy     { find<TextView>(R.id.detail_var) }
-        val mFavoriteFab: FloatingActionButton by lazy     { find<FloatingActionButton>(R.id.fav_result_fab) }
-        val mCloseResFab: FloatingActionButton by lazy     { find<FloatingActionButton>(R.id.close_result_fab) }
-        val mReplayFab: FloatingActionButton by lazy       { find<FloatingActionButton>(R.id.replay_result_fab)}
+    val _lazyMgr = resettableManager()
+    val mDisplay: TextView by resettableLazy(_lazyMgr)    { find<TextView>(R.id.display)}
+    val mBackspace: View by resettableLazy(_lazyMgr)      { find<View>(R.id.backspace_button) }
+    val mFav: View by resettableLazy(_lazyMgr)            { find<View>(R.id.fav_button) }
+    val mDisplayWarning: View by resettableLazy(_lazyMgr) { find<View>(R.id.display_empty_warning) }
+    val mRollButton: View by resettableLazy(_lazyMgr)     { find<View>(R.id.roll_button) }
+    val mLastRoll: TextView by resettableLazy(_lazyMgr)   { activity.find<TextView>(R.id.last_roll)}
+    val mResultView: View by resettableLazy(_lazyMgr)     { find<View>(R.id.result_view) }
+    val mFormula: TextView by resettableLazy(_lazyMgr)    { find<TextView>(R.id.formula_var) }
+    val mResult: TextView by resettableLazy(_lazyMgr)     { find<TextView>(R.id.result_var) }
+    val mDetail: TextView by resettableLazy(_lazyMgr)     { find<TextView>(R.id.detail_var) }
+    val mFavoriteFab: FloatingActionButton by resettableLazy(_lazyMgr)     { find<FloatingActionButton>(R.id.fav_result_fab) }
+    val mCloseResFab: FloatingActionButton by resettableLazy(_lazyMgr)     { find<FloatingActionButton>(R.id.close_result_fab) }
+    val mReplayFab: FloatingActionButton by resettableLazy(_lazyMgr)       { find<FloatingActionButton>(R.id.replay_result_fab)}
 
-        var mWidth: Int = 0
-        var mHeight: Int = 0
+    var mWidth: Int = 0
+    var mHeight: Int = 0
 
-    inner class HomeState {
-        lateinit var mDb: DatabaseHelper
+    lateinit var mDb: DatabaseHelper
 
-        var mDataStack: Stack<String> = Stack()
-        var mDisplayWarningShowed: Boolean = false
-        var mResultViewOpened: Boolean = false
-    }
-
-    var mState = HomeState()
+    var mDataStack: Stack<String> = Stack()
+    var mDisplayWarningShowed: Boolean = false
+    var mResultViewOpened: Boolean = false
 
     companion object {
         private var mFragment: HomeFragment? = null
@@ -65,7 +64,7 @@ class HomeFragment : android.support.v4.app.Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        mState.mDb = DatabaseHelper.getInstance(context)!!
+        mDb = DatabaseHelper.getInstance(context)!!
 
         val metrics = DisplayMetrics()
         val wm = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
@@ -83,6 +82,10 @@ class HomeFragment : android.support.v4.app.Fragment() {
         super.onCreateView(inflater, container, savedInstanceState)
         val view: View = inflater!!.inflate(R.layout.fragment_home, container, false)
 
+        // We reset every property initialized lazily, because fragments sent to the backstack change their
+        // view, and it screws up everything
+        _lazyMgr.reset()
+
         return view
     }
 
@@ -97,20 +100,20 @@ class HomeFragment : android.support.v4.app.Fragment() {
     private fun initEventHandlers() {
         // Delete one element on single backspace tap
         mBackspace.setOnClickListener {
-            if (mState.mDataStack.size > 0) {
-                mState.mDataStack.pop()
+            if (mDataStack.size > 0) {
+                mDataStack.pop()
                 refresh_formula()
             }
         }
         // Delete entire formula on long backspace press
         mBackspace.setOnLongClickListener {
-            mState.mDataStack.clear()
+            mDataStack.clear()
             refresh_formula()
             true
         }
 
         mLastRoll.setOnClickListener {
-            if (mLastRoll.text != "" && !mState.mResultViewOpened) {
+            if (mLastRoll.text != "" && !mResultViewOpened) {
                 openResultView()
             }
         }
@@ -119,12 +122,12 @@ class HomeFragment : android.support.v4.app.Fragment() {
         mFav.setOnClickListener {
             val menu = PopupMenu(context, mFav)
             menu.setOnMenuItemClickListener { item ->
-                mState.mDataStack.clear()
-                push_with_auto_symbols(mState.mDb.getFavorite(item.itemId)?.formula)
+                mDataStack.clear()
+                push_with_auto_symbols(mDb.getFavorite(item.itemId)?.formula)
 
                 true
             }
-            for ((formula, result, detail, name, id) in mState.mDb.getAllFavoritesRolls()) {
+            for ((formula, result, detail, name, id) in mDb.getAllFavoritesRolls()) {
                 menu.menu.add(0, id, Menu.NONE, "$name ($formula)")
             }
             menu.show()
@@ -132,7 +135,7 @@ class HomeFragment : android.support.v4.app.Fragment() {
 
         // Roll the dices on tap
         mRollButton.setOnClickListener {
-            if (mState.mDataStack.size > 0) {
+            if (mDataStack.size > 0) {
                 executeRoll()
                 if (!PreferenceManager.getDefaultSharedPreferences(context).getBoolean("pref_no_roll_window", false)) {
                     openResultView()
@@ -157,7 +160,7 @@ class HomeFragment : android.support.v4.app.Fragment() {
      * UI Modifications
      */
     fun showDisplayWarning() {
-        mState.mDisplayWarningShowed = true
+        mDisplayWarningShowed = true
         mDisplayWarning.animate()
                 .setDuration(300)
                 .alpha(1f)
@@ -173,7 +176,7 @@ class HomeFragment : android.support.v4.app.Fragment() {
     }
 
     fun hideDisplayWarning() {
-        mState.mDisplayWarningShowed = false
+        mDisplayWarningShowed = false
         mDisplayWarning.animate()
                 .setDuration(300)
                 .alpha(0f)
@@ -185,14 +188,14 @@ class HomeFragment : android.support.v4.app.Fragment() {
         mFavoriteFab.show()
         mCloseResFab.show()
         mReplayFab.show()
-        mState.mResultViewOpened = true
+        mResultViewOpened = true
     }
 
     fun closeResultView() {
         raise()
-        mState.mDataStack.clear()
+        mDataStack.clear()
         refresh_formula()
-        mState.mResultViewOpened = false
+        mResultViewOpened = false
     }
 
     fun raise() {
@@ -213,15 +216,15 @@ class HomeFragment : android.support.v4.app.Fragment() {
      * Data Operations
      */
     fun executeRoll() {
-        val dice: DiceRoll = DiceRoll.from_string(mState.mDataStack.joinToString(""))
+        val dice: DiceRoll = DiceRoll.from_string(mDataStack.joinToString(""))
         val result = dice.roll()
         mFormula.text = dice.formula()
         mDetail.text = result.as_readable_string()
         mResult.text = result.as_total_string()
-        mLastRoll.text = result.as_total_string()
+        (activity as MainActivity).setLastRoll(result.as_total(), result.roll_info())
 
         if (!result.as_readable_string().equals("") && !result.as_total().toString().equals("")) {
-            mState.mDb.addRecentRoll(RollModel(
+            mDb.addRecentRoll(RollModel(
                     dice.formula(),
                     result.as_total_string(),
                     result.as_readable_string()
@@ -239,19 +242,19 @@ class HomeFragment : android.support.v4.app.Fragment() {
         name.setText(mFormula.text.toString(), TextView.BufferType.EDITABLE)
         name.selectAll()
         dialog.findViewById(R.id.add_roll_button).setOnClickListener {
-            mState.mDb.addFavoriteRoll(RollModel(mFormula.text.toString(),"","",name.text.toString()))
+            mDb.addFavoriteRoll(RollModel(mFormula.text.toString(),"","",name.text.toString()))
             dialog.dismiss()
         }
     }
 
     fun push_element_to_stack(view: View) {
-        if (mState.mDisplayWarningShowed)
+        if (mDisplayWarningShowed)
             hideDisplayWarning()
 
         // Check if we're not trying to add too long of a number, without preventing from adding a +/-
         if (view.id != R.id.button_moins && view.id != R.id.button_plus)
-            if (mState.mDataStack.size - mState.mDataStack.lastIndexOf("+") > 4 &&
-                    mState.mDataStack.size - mState.mDataStack.lastIndexOf("-") > 4)
+            if (mDataStack.size - mDataStack.lastIndexOf("+") > 4 &&
+                    mDataStack.size - mDataStack.lastIndexOf("-") > 4)
                 return
 
         push_with_auto_symbols(when(view.id) {
@@ -284,17 +287,22 @@ class HomeFragment : android.support.v4.app.Fragment() {
 
     fun push_with_auto_symbols(value: String?) {
         if (value == null) return
-        if (mState.mDataStack.size > 0 && mState.mDataStack.peek().contains('d') && value != "+" && value != "-") {
-            mState.mDataStack.push("+")
+        if (mDataStack.size > 0 && mDataStack.peek().contains('d') && value != "+" && value != "-") {
+            mDataStack.push("+")
         }
-        mState.mDataStack.push(value)
+        mDataStack.push(value)
     }
 
     fun refresh_formula() {
         var formula = ""
-        mState.mDataStack.forEach {
+        mDataStack.forEach {
             item -> formula += if (item == "+" || item == "-") " $item " else item
         }
+
+        // For some reason that I don't even want to understand
+        // mDisplay is only updated visually with this here. Remove it and it doesn't update
+        // I don't even
+        Log.wtf("...", "...")
         mDisplay.text = formula
     }
 }

@@ -1,5 +1,7 @@
 package io.deuxsept.dndice.Model
 
+import io.deuxsept.dndice.Utils.LastRollInfo
+
 /**
  * Created by Flo
  * 10/08/2016.
@@ -44,5 +46,15 @@ public class DiceRollResult {
 
     fun has_critical(): Boolean {
         return results.filter {item -> item is Dice && item.results.contains(item.dice_type)}.isNotEmpty()
+    }
+
+    fun roll_info(): LastRollInfo {
+        val fumble = has_fumble()
+        val crit = has_critical()
+
+        return (if (fumble && crit) LastRollInfo.Both
+                else if (fumble)    LastRollInfo.Fumble
+                else if (crit)      LastRollInfo.Critical
+                else                LastRollInfo.Normal)
     }
 }

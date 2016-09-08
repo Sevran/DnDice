@@ -48,5 +48,17 @@ class Utils() {
     }
 }
 
+enum class SwitchFragmentAction {
+    Insert,
+    Replace
+}
+
+enum class LastRollInfo {
+    Normal,
+    Critical,
+    Fumble,
+    Both
+}
+
 inline fun <reified T : View> Activity.find(id: Int): T = findViewById(id) as T
 inline fun <T : View> Fragment.find(id: Int): T = this.getView()?.findViewById(id) as T

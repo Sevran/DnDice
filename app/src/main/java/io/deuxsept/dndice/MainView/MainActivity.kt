@@ -170,4 +170,19 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         dialog.setContentView(R.layout.dialog_about)
         dialog.show()
     }
+
+    fun setLastRoll(value: Int, info: LastRollInfo) {
+        mLastRoll.text = value.toString()
+        mLastRoll.setTypeface(null, when(info) {
+            LastRollInfo.Normal -> Typeface.NORMAL
+            LastRollInfo.Critical, LastRollInfo.Fumble -> Typeface.BOLD
+            LastRollInfo.Both -> Typeface.BOLD_ITALIC
+        })
+        mLastRoll.setTextColor(when(info) {
+            LastRollInfo.Normal -> R.color.md_white_1000
+            LastRollInfo.Fumble -> R.color.md_red_500
+            LastRollInfo.Critical -> R.color.md_yellow_500
+            LastRollInfo.Both -> R.color.md_lime_500
+        })
+    }
 }
