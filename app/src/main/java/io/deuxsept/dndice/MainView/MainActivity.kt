@@ -13,27 +13,32 @@ import android.support.v4.widget.DrawerLayout
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatDelegate
 import android.support.v7.preference.PreferenceManager
+import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.widget.TextView
 import io.deuxsept.dndice.R
+import io.deuxsept.dndice.Utils.LastRollInfo
+import io.deuxsept.dndice.Utils.SwitchFragmentAction
+import io.deuxsept.dndice.Utils.find
+import org.w3c.dom.Text
 
 /**
  * Main activity
  */
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
-    var HOME_FRAGMENT: Int = 0
-    var FAVORITE_FRAGMENT: Int = 1
-    var RECENT_FRAGMENT: Int = 2
-    var SETINGS_FRAGMENT: Int = 3
+    public val HOME_FRAGMENT: Int = 0
+    public val FAVORITE_FRAGMENT: Int = 1
+    public val RECENT_FRAGMENT: Int = 2
+    public val SETTINGS_FRAGMENT: Int = 3
 
-    var mCurrentFragmentPos: Int = 0
-    lateinit var mHomeFragment: HomeFragment
-    lateinit var mToolbar: Toolbar
-    lateinit var mDrawer: DrawerLayout
-    lateinit var mNavigationView: NavigationView
-    lateinit var mLastRoll: TextView
+    var mCurrentFragmentPos: Int = -1 // Uninitialized at first.
+    val mToolbar: Toolbar by lazy               { find<Toolbar>(R.id.toolbar)}
+    val mDrawer: DrawerLayout by lazy           { find<DrawerLayout>(R.id.drawer_layout)}
+    val mNavigationView: NavigationView by lazy { find<NavigationView>(R.id.nav_view)}
+    val mLastRoll: TextView by lazy             { find<TextView>(R.id.last_roll)}
+    var _fragmentHandles: MutableMap<Int, Fragment> = mutableMapOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,17 +50,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_AUTO)
         }
 
-        mToolbar = findViewById(R.id.toolbar) as Toolbar
         setSupportActionBar(mToolbar)
-        mLastRoll = findViewById(R.id.last_roll) as TextView
-
-        mDrawer = findViewById(R.id.drawer_layout) as DrawerLayout
         val toggle = ActionBarDrawerToggle(
                 this, mDrawer, mToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
         mDrawer.addDrawerListener(toggle)
         toggle.syncState()
-
-        mNavigationView = findViewById(R.id.nav_view) as NavigationView
         mNavigationView.setNavigationItemSelectedListener(this)
 
         var fragId: Int;
@@ -85,8 +84,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             mDrawer.closeDrawer(GravityCompat.START)
         } else if (mCurrentFragmentPos != HOME_FRAGMENT) {
             switchFragment(HomeFragment.newInstance(), R.string.app_name, HOME_FRAGMENT)
-        } else if (mHomeFragment.mState.mResultViewOpened) {
-            mHomeFragment.closeResultView()
+        } else if (_fragmentHandles[HOME_FRAGMENT] != null && (_fragmentHandles[HOME_FRAGMENT] as HomeFragment).mResultViewOpened) {
+            (_fragmentHandles[HOME_FRAGMENT] as HomeFragment).closeResultView()
         } else {
             super.onBackPressed()
         }
@@ -95,20 +94,23 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     @SuppressWarnings("StatementWithEmptyBody")
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         val id = item.itemId
+        var info = SwitchFragmentAction.Replace
+        var insertedFragment: Fragment
+        var insertedIdx: Int
+
+        when (item.itemId) {
+            R.id.nav_home ->     { insertedFragment = HomeFragment.newInstance(); insertedIdx = HOME_FRAGMENT }
+            R.id.nav_favorite -> { insertedFragment = FavoriteFragment.newInstance(); insertedIdx = FAVORITE_FRAGMENT }
+            R.id.nav_recent ->   { insertedFragment = RecentFragment.newInstance(); insertedIdx = RECENT_FRAGMENT }
+            R.id.nav_settings -> { insertedFragment = SettingsFragment.newInstance(); insertedIdx = SETTINGS_FRAGMENT }
+            else ->              { insertedFragment = HomeFragment.newInstance(); insertedIdx = HOME_FRAGMENT }
+        }
+
         mLastRoll.visibility = View.GONE
         when (id) {
-            R.id.nav_home -> {
-                switchFragment(HomeFragment.newInstance(), R.string.app_name, HOME_FRAGMENT)
+            R.id.nav_home, R.id.nav_favorite, R.id.nav_recent, R.id.nav_settings -> {
+                switchFragment(insertedFragment, R.string.app_name, insertedIdx, info)
                 mLastRoll.visibility = View.VISIBLE
-            }
-            R.id.nav_favorite -> {
-                switchFragment(FavoriteFragment.newInstance(), R.string.nav_favorites, FAVORITE_FRAGMENT)
-            }
-            R.id.nav_recent -> {
-                switchFragment(RecentFragment.newInstance(), R.string.nav_last_rolls, RECENT_FRAGMENT)
-            }
-            R.id.nav_settings -> {
-                switchFragment(SettingsFragment.newInstance(), R.string.nav_settings, SETINGS_FRAGMENT)
             }
             R.id.nav_share -> {
                 shareApp()
@@ -124,21 +126,28 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         return true
     }
 
-    fun switchFragment(fragment: Fragment, fragmentName: Int, fragmentPos: Int) {
-        if (mCurrentFragmentPos != fragmentPos) {
-            val fragmentTransaction = supportFragmentManager.beginTransaction()
-            fragmentTransaction.setCustomAnimations(R.anim.fade_in, R.anim.fade_out)
-            fragmentTransaction.replace(R.id.fragment_container, fragment)
-            fragmentTransaction.commitAllowingStateLoss()
-            mToolbar.setTitle(fragmentName)
-            mCurrentFragmentPos = fragmentPos
-            mNavigationView.menu.getItem(fragmentPos).isChecked = true
+    fun switchFragment(fragment: Fragment, fragmentName: Int, fragmentPos: Int, action: SwitchFragmentAction = SwitchFragmentAction.Replace) {
+        if (mCurrentFragmentPos == fragmentPos)
+            return
+
+        // Update our fragment handles
+        _fragmentHandles[fragmentPos] = fragment
+
+        val fragmentTransaction = supportFragmentManager.beginTransaction()
+        fragmentTransaction.setCustomAnimations(R.anim.fade_in, R.anim.fade_out)
+        when (action) {
+            SwitchFragmentAction.Replace -> fragmentTransaction.replace(R.id.fragment_container, fragment)
+            SwitchFragmentAction.Insert -> fragmentTransaction.add(R.id.fragment_container, fragment)
         }
+        fragmentTransaction.commitAllowingStateLoss()
+        mToolbar.setTitle(fragmentName)
+        mCurrentFragmentPos = fragmentPos
+        mNavigationView.menu.getItem(fragmentPos).isChecked = true
     }
 
     @Suppress("unused")
     fun push_element_to_stack(view: View) {
-        mHomeFragment.push_element_to_stack(view)
+        (_fragmentHandles[HOME_FRAGMENT] as HomeFragment).push_element_to_stack(view)
     }
 
     fun shareApp() {
