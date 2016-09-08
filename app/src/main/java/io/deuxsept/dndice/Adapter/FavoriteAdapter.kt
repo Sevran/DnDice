@@ -1,6 +1,7 @@
 package io.deuxsept.dndice.Adapter
 
 import android.os.Build
+import android.os.Handler
 import android.support.v4.view.MotionEventCompat
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -16,6 +17,7 @@ import io.deuxsept.dndice.MainView.FavoriteFragment
 import io.deuxsept.dndice.Model.RollModel
 import io.deuxsept.dndice.R
 import io.deuxsept.dndice.Utils.ItemTouchHelperAdapter
+import io.deuxsept.dndice.Utils.Utils
 import java.util.*
 
 /**
@@ -102,6 +104,17 @@ class FavoriteAdapter : RecyclerView.Adapter<FavoriteAdapter.ViewHolder>, ItemTo
         val prev = mList.removeAt(fromPosition)
         mList.add(if (toPosition > fromPosition) toPosition - 1 else toPosition, prev)
         notifyItemMoved(fromPosition, toPosition)
+    }
+
+    override fun onItemMoved(fromPosition: Int, toPosition: Int) {
+        Handler().postDelayed({
+            var i: Int = 0
+            for ((formula, result, detail, name, id) in mList) {
+                Utils.log_d("onItemMove", "Reordering $formula to position $i")
+                mDb.reorderFavoriteRoll(id, i)
+                i++
+            }
+        }, 500)
     }
 
     fun addAll(models: List<RollModel>) {

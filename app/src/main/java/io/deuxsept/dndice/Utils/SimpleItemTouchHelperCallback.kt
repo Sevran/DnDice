@@ -9,6 +9,9 @@ import io.deuxsept.dndice.Adapter.FavoriteAdapter
  * on 15/08/2016.
  */
 class SimpleItemTouchHelperCallback(private val mAdapter: FavoriteAdapter) : ItemTouchHelper.Callback() {
+    var dragFrom = -1
+    var dragTo = -1
+
     override fun onSwiped(viewHolder: RecyclerView.ViewHolder?, direction: Int) {
 
     }
@@ -28,7 +31,24 @@ class SimpleItemTouchHelperCallback(private val mAdapter: FavoriteAdapter) : Ite
 
     override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder,
                         target: RecyclerView.ViewHolder): Boolean {
+        val fromPosition = viewHolder.adapterPosition
+        val toPosition = target.adapterPosition
+        if (dragFrom === -1) {
+            dragFrom = fromPosition
+        }
+        dragTo = toPosition
+
         mAdapter.onItemMove(viewHolder.adapterPosition, target.adapterPosition)
         return true
+    }
+
+    override fun clearView(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder) {
+        super.clearView(recyclerView, viewHolder)
+        if (dragFrom !== -1 && dragTo !== -1 && dragFrom !== dragTo) {
+            mAdapter.onItemMoved(dragFrom, dragTo)
+        }
+        dragTo = -1
+        dragFrom = dragTo -1
+
     }
 }

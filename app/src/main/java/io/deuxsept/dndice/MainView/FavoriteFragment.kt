@@ -85,7 +85,7 @@ class FavoriteFragment : Fragment(), FavoriteAdapter.OnDragStartListener {
                         return true
                     }
                 })
-        mRecyclerView.addOnItemTouchListener(swipeTouchListener);
+        mRecyclerView.addOnItemTouchListener(swipeTouchListener)
 
         getRollsFromDatabase()
         return view
