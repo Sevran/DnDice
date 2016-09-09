@@ -1,6 +1,9 @@
 [![license](https://img.shields.io/github/license/mashape/apistatus.svg?maxAge=2592000)](https://fr.wikipedia.org/wiki/Licence_MIT)
 ![minSdkVersion 19](https://img.shields.io/badge/minSdkVersion-19-red.svg?style=true)
 ![compileSdkVersion 24](https://img.shields.io/badge/compileSdkVersion-24-yellow.svg?style=true)
+--------------------------------
+[![build status](https://gitlab.com/feula/decisive-wizard/badges/master/build.svg)](https://gitlab.com/feula/decisive-wizard/commits/master)
+[![coverage report](https://gitlab.com/feula/decisive-wizard/badges/master/coverage.svg)](https://gitlab.com/feula/decisive-wizard/commits/master)
 
 # DnDice
 
