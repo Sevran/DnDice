@@ -9,12 +9,14 @@ import android.support.design.widget.FloatingActionButton
 import android.support.v7.preference.PreferenceManager
 import android.support.v7.widget.PopupMenu
 import android.util.DisplayMetrics
+import android.util.Log
 import android.view.*
 import android.view.animation.*
 import android.widget.EditText
 import android.widget.TextView
 import io.deuxsept.dndice.Database.DatabaseHelper
 import io.deuxsept.dndice.Model.DiceRoll
+import io.deuxsept.dndice.Model.Preferences
 import io.deuxsept.dndice.Model.RollModel
 import io.deuxsept.dndice.R
 import io.deuxsept.dndice.Utils.Utils
@@ -121,12 +123,19 @@ class HomeFragment : android.support.v4.app.Fragment() {
         // Fill the stack with appropriate data on favorite select
         mFav.setOnClickListener {
             val menu = PopupMenu(context, mFav)
+            // Fill the formula textview
             menu.setOnMenuItemClickListener { item ->
                 mDataStack.clear()
+                // Fun? This makes it so the entire favourite is deleted at once because it is one
+                // element in the stack... weird feature?
                 push_with_auto_symbols(mDb.getFavorite(item.itemId)?.formula)
-
+                if (Preferences.getInstance(context).QuickFavouritesRoll) {
+                    executeRoll()
+                }
+                refresh_formula()
                 true
             }
+            // Fill the favourite menu
             for ((formula, result, detail, name, id) in mDb.getAllFavoritesRolls()) {
                 menu.menu.add(0, id, Menu.NONE, "$name ($formula)")
             }
@@ -137,7 +146,7 @@ class HomeFragment : android.support.v4.app.Fragment() {
         mRollButton.setOnClickListener {
             if (mDataStack.size > 0) {
                 executeRoll()
-                if (!PreferenceManager.getDefaultSharedPreferences(context).getBoolean("pref_no_roll_window", false)) {
+                if (!Preferences.getInstance(context).HideRollWindow) {
                     openResultView()
                 }
             } else {
@@ -298,7 +307,7 @@ class HomeFragment : android.support.v4.app.Fragment() {
         mDataStack.forEach {
             item -> formula += if (item == "+" || item == "-") " $item " else item
         }
-        
+
         mDisplay.text = formula
     }
 }
