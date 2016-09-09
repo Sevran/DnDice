@@ -16,8 +16,10 @@ before_script:
   - echo y | android-sdk-linux/tools/android --silent update sdk --no-ui --all --filter extra-android-m2repository
   - echo y | android-sdk-linux/tools/android --silent update sdk --no-ui --all --filter extra-google-google_play_services
   - echo y | android-sdk-linux/tools/android --silent update sdk --no-ui --all --filter extra-google-m2repository
-  - echo y | android update sdk --no-ui
   - export ANDROID_HOME=$PWD/android-sdk-linux
+  - mkdir "$ANDROID_HOME/licenses" || true
+  - echo -e "\n8933bad161af4178b1185d1a37fbf41ea5269c55" > "$ANDROID_SDK/licenses/android-sdk-license"
+  - echo -e "\n504667f4c0de7af1a06de9f4b1727b84351f2910" > "$ANDROID_SDK/licenses/android-sdk-preview-license"
   - chmod +x ./gradlew
 
 build:
