@@ -1,13 +1,20 @@
 package io.deuxsept.dndice.Adapter
 
+import android.app.Activity
+import android.app.Dialog
+import android.content.Context
+import android.content.DialogInterface
 import android.graphics.PorterDuff
 import android.os.Build
 import android.support.v4.content.ContextCompat
+import android.support.v7.app.AlertDialog
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.view.animation.AnimationUtils
+import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import io.deuxsept.dndice.Database.DatabaseHelper
@@ -28,6 +35,8 @@ class RecentAdapter : RecyclerView.Adapter<RecentAdapter.ViewHolder> {
     private var lastPosition = -1
     private lateinit var mLocale: Locale
     private lateinit var mDb: DatabaseHelper
+    private var _ctx: Context
+    private var _activity: Activity
 
     companion object {
         var mListener: ViewHolder.onItemClick? = null
@@ -41,6 +50,8 @@ class RecentAdapter : RecyclerView.Adapter<RecentAdapter.ViewHolder> {
             mLocale = fragment.context.resources.configuration.locale
         mFragment = fragment
         mDb = DatabaseHelper(fragment.context)
+        _ctx = fragment.context
+        _activity = fragment.activity
     }
 
     class ViewHolder(itemView: View, listener: ViewHolder.onItemClick) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
@@ -80,23 +91,56 @@ class RecentAdapter : RecyclerView.Adapter<RecentAdapter.ViewHolder> {
         return ViewHolder(itemView, object : ViewHolder.onItemClick {
             override fun onClick(caller: View, position: Int) {
                 val model: RollModel = mList[position]
-                val fav: Boolean = !model.fav
-                var i: Int = 0
-                var was_added = false
-                for (m in mList) {
-                    if (m.formula == mList[position].formula) {
-                        if (!was_added) {
-                            if (fav) mDb.addFavoriteRoll(m)
-                            else mDb.deleteFavoriteRoll(m.id)
-                            was_added = true
-                        }
-                        m.fav = fav
-                        notifyItemChanged(i)
-                    }
-                    i++
-                }
+                // If we're adding, first check for no duplication (and ask)
+                // Then ask for name and etc.
+                val alert = AlertDialog.Builder(_activity)
+                    .setTitle("Confirm duplication")
+                    .setMessage("You already have a favourite with the same dice formula. Create anyways ?")
+                    .setNegativeButton(android.R.string.no, { iface, i -> })
+                    .setPositiveButton(android.R.string.yes, { iface, i ->
+                        favoriteRoll(model)
+                    })
+                    .create()
+
+                if (mDb.getAllFavoritesRolls().filter { it -> it.formula == model.formula }.size > 0)
+                    alert.show()
+                else
+                    favoriteRoll(model);
             }
         })
+    }
+    private fun favoriteRoll(model: RollModel) {
+        var dialog_favorite_add = Dialog(_ctx)
+        dialog_favorite_add.setContentView(R.layout.dialog_add_favorite)
+        dialog_favorite_add.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE)
+        dialog_favorite_add.show()
+        dialog_favorite_add.findViewById(R.id.add_roll_button).setOnClickListener {
+            val name = dialog_favorite_add.findViewById(R.id.roll_name) as EditText
+            model.name = name.text.toString()
+            dialog_favorite_add.dismiss();
+            applyAndPropagateFavorite(model)
+        }
+    }
+
+    private fun applyAndPropagateFavorite(model: RollModel) {
+        var i = 0
+        var modification_done = false
+        for (m in mList) {
+            if (m.formula == model.formula) {
+                if (!modification_done && !m.fav) {
+                    m.name = model.name
+                    mDb.addFavoriteRoll(m)
+                    modification_done = true
+                }
+                else if (!modification_done && m.fav){
+                    mDb.deleteFavoriteRoll(m.id)
+                    modification_done = true
+                }
+                m.fav = !m.fav
+                notifyItemChanged(i)
+            }
+            i++
+        }
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
